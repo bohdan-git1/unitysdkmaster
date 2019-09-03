@@ -1,0 +1,10 @@
+Label {
+    font-size: 12;
+    font-weight: bold;
+	text-color: #3498db;
+}
+
+TextField#txtKey {
+	height:200px;
+	vertical-align:top;
+}
