@@ -4,10 +4,22 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-//tentative names
+//tentative names, this will be move out to seperate dll and repacked and probably generated 
+//and installed to client machines
 public class AssetLicenseManager : MonoBehaviour
 {
+    private static AssetLicenseManager _INSTANCE;
+
+    public static AssetLicenseManager Instance
+    {
+        get
+        {
+            return _INSTANCE;
+        }
+    }
+
     public bool IsInitialized { get; private set; }
+    public License CurrentLicense { get; set; }
     public LicenseManager LicenseManager { get; private set; }
 
     public AssetLicenseManager()
@@ -32,6 +44,7 @@ public class AssetLicenseManager : MonoBehaviour
             LicenseFilePath = licensePath
         };
 
+        //configuring
         var licenseConfig = new LicenseSpringConfiguration(api, skey,
             productCode,
             appName,
@@ -46,6 +59,13 @@ public class AssetLicenseManager : MonoBehaviour
 
     private void Awake()
     {
-        
+        //this where we hook to unity engine internal script initialization
+        if (_INSTANCE ==null || _INSTANCE != this)
+            _INSTANCE = this;
+
+        //this is odd and hacked...we had to call it from unity own awake
+        //so we dont run into an error
+        CurrentLicense = (License)LicenseManager.CurrentLicense();
+
     }
 }

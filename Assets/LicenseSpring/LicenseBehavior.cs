@@ -8,4 +8,10 @@ using UnityEngine;
 
 public class LicenseBehavior : MonoBehaviour
 {
+    
+
+    protected virtual void Awake()
+    {
+
+    }
 }
