@@ -1,7 +1,6 @@
 ﻿using System.IO;
 
 using UnityEngine;
-using UnityEngine.Windows;
 
 using LicenseSpring;
 
@@ -84,12 +83,14 @@ namespace LicenseSpring.Unity
         private void InitLicenseManager()
         {
             //TODO :license path, this still producing errors, had to run as administrator which is very unlikely to happen
+            string licPath = Path.Combine(Application.dataPath, "config");
+
             LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
             {
                 HardwareID = System.Guid.NewGuid().ToString(),
-                EnableLogging = true,
+                EnableLogging = false,
                 CollectHostNameAndLocalIP = true,
-                LicenseFilePath = Application.dataPath
+                LicenseFilePath = licPath
             };
 
             _licenseConfig = new LicenseSpringConfiguration(_api, _skey,

@@ -1,8 +1,2 @@
-License log started at 9/4/2019 7:58:37 PM
-
-Request: trial_key
-Response: code - 200, body - {"license":"FXKA-8KHA-G9EL-4GUD","license_type":"perpetual","is_trial":true}
-
-Request: activate_license
-Response: code - 200, body - {"license_signature":"uiCaM0s3NanhYNwwRnMo+swNDE9PBZ8/6aehbEXtMGvICuJaS6vX1vGtBzN31byCJv4qHLhxxXY6KDJMb+EYmQnVYxJgIXfug5bZTtXTrTq/KmBgv4r36LFSo5f61m0LnBOpgCTx4tFP2mpSRx+u8X3SH/RraYqyeK6z215o8KEw+10h1H2KjNi6gJgwvOcckRd6HDjedcbPoyLC6rWoDXenG3wuzfThmK2JnaWJaVVobqy7Ispr7QSNzZoo2KQJUKm4XtK6tY6l9ly1/IhcBIHIAUY+KRDt74r/SFIAdmQZM/dibwTjK6bLI4Okzth+Kc6kNXK6SLcI5zCnWOJ/+JiuS4VfZNAVAZjXnmo42ATGxCEIPxrH/YYWfgfzzB7U21DTgLkKuy4jq0se/JlqevD1fGL5/3eDx1xbyjqKNGgiFn21t0347O+/X1li51sCSEYVqQq089Gz+vfybFU9a8kezHAuo/O3v/cnRpqPVB4h46AoZ4pqHlN8uGgnwi1Hoo72VQmL9aE+dUKU+aB8DPV5q/c68MLZ3unuKkL5jZJndp9NOs2Z2WPKxTZA/1Eab1yyXfQDbm2jMaQnNuy5Kic/GX1BlXSgwvsONiuGfu96ZoZq3LjpolhlFPIj5pn4ORzkzThs6eMjmqLJepvKw4ZEnh+Mf+ecwYRWRrQIkeM=","validity_period":"2019-10-04T00:00:00.000Z","product_features":[],"license_type":"perpetual","is_trial":true,"maintenance_period":null,"custom_fields":[]}
+License log started at 9/5/2019 1:01:26 AM
 
