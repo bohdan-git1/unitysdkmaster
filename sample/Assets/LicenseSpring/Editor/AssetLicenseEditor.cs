@@ -33,7 +33,6 @@ namespace LicenseSpring.Unity.Tools
             // The style will be applied to the VisualElement and all of its children.
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/LicenseSpring/Editor/AssetLicenseEditor.uss");
             _root.styleSheets.Add(styleSheet);
-
             _assetLicenseManager = this.target as LicenseSpringUnityManager;
         }
 
@@ -61,12 +60,12 @@ namespace LicenseSpring.Unity.Tools
 
             if (!string.IsNullOrEmpty(key))
             {
-                var license = _assetLicenseManager.LicenseManager.ActivateLicense(key);
+                var license = _assetLicenseManager.UnityLicenseManager.ActivateLicense(key);
             }
             else
             {
-                var trialKey = _assetLicenseManager.LicenseManager.GetTrialKey(email);
-                var license = _assetLicenseManager.LicenseManager.ActivateLicense(trialKey);
+                var trialKey = _assetLicenseManager.UnityLicenseManager.GetTrialKey(email);
+                var license = _assetLicenseManager.UnityLicenseManager.ActivateLicense(trialKey);
             }
         }
     } 

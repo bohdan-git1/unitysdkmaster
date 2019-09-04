@@ -49,6 +49,8 @@ namespace LicenseSpring.Unity
                 case UnityLicenseMessageType.LicenseExpired:
                     break;
                 case UnityLicenseMessageType.LicenseInvalid:
+                    PanelLicense.SetActive(true);
+
                     break;
                 default:
                     break;

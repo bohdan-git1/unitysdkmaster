@@ -27,48 +27,53 @@ namespace LicenseSpring.Unity
                     .AddComponent<LicenseSpringUI>();
             }
 
-            var license = LicenseSpringUnityManager.Instance.CurrentLicense;
+            var license = LicenseSpringUnityManager.Instance
+                .UnityLicenseManager.CurrentLicense();
             if (license == null)
             {
                 ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b)=> {
                     m.Message(UnityLicenseMessageType.LicenseInvalid, "License not issued");
                 });
             }
-
-
-            if (!license.IsActive())
+            else
             {
-                ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
-                    m.Message(UnityLicenseMessageType.LicenseInActive, "License inactive");
-                });
+                if (!license.IsActive())
+                {
+                    ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
+                        m.Message(UnityLicenseMessageType.LicenseInActive, "License inactive");
+                    });
+                }
+
+                if (!license.IsExpired())
+                {
+                    ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
+                        m.Message(UnityLicenseMessageType.LicenseExpired, "License is Expired");
+                        m.SetSender(this.gameObject);
+                    });
+                }
+
+                //more will be added
+                if (!license.IsTrial())
+                {
+                    var currentDate = DateTime.Now;
+                    var validatyPeriod = license.ValidityPeriod();
+                }
+
             }
 
-            if (!license.IsExpired())
-            {
-                ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
-                    m.Message(UnityLicenseMessageType.LicenseExpired, "License is Expired");
-                    m.SetSender(this.gameObject);
-                });
-            }
 
-            //more will be added
-            if (!license.IsTrial())
-            {
-                var currentDate = DateTime.Now;
-                var validatyPeriod = license.ValidityPeriod();
-            }
 
         }
 
         public void RegisterTrial(string email = null)
         {
-            var key = LicenseSpringUnityManager.Instance.LicenseManager.GetTrialKey(email);
-            LicenseSpringUnityManager.Instance.LicenseManager.ActivateLicense(key);
+            var key = LicenseSpringUnityManager.Instance.UnityLicenseManager.GetTrialKey(email);
+            LicenseSpringUnityManager.Instance.UnityLicenseManager.ActivateLicense(key);
         }
 
         public void Register(string key)
         {
-            LicenseSpringUnityManager.Instance.LicenseManager.ActivateLicense(key);
+            LicenseSpringUnityManager.Instance.UnityLicenseManager.ActivateLicense(key);
         }
 
     }

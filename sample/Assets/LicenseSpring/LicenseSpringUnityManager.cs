@@ -17,7 +17,9 @@ namespace LicenseSpring.Unity
 
         private static 
             LicenseSpringUnityManager    _INSTANCE;
+
         private GameObject              _licenseChecker;
+
         private string          _api,
                                 _skey,
                                 _prodCode,
@@ -25,26 +27,33 @@ namespace LicenseSpring.Unity
                                 _appVersion;
 
         private LicenseSpringConfiguration _licenseConfig;
+        private LicenseManager             _licenseManager;
+
 
         public static LicenseSpringUnityManager Instance
         {
             get
             {
+                if (_INSTANCE == null)
+                    _INSTANCE = FindObjectOfType<LicenseSpringUnityManager>();
+
                 return _INSTANCE;
             }
         }
 
         public bool IsInitialized { get; private set; }
 
-        public License CurrentLicense
-        {
-            get
-            {
-                return (License)LicenseManager.CurrentLicense();
+        public LicenseManager UnityLicenseManager {
+            get {
+                if (_licenseManager == null)
+                    InitLicenseManager();
+
+                if (!_licenseManager.IsInitialized())
+                    InitLicenseManager();
+
+                return _licenseManager;
             }
         }
-
-        public LicenseManager LicenseManager { get; private set; }
 
         public LicenseSpringUnityManager()
         {
@@ -55,15 +64,24 @@ namespace LicenseSpring.Unity
             _appName = "Unity Asset Store Item Licensor";
             _appVersion = "v.1.0";
 
-            _licenseConfig = new LicenseSpringConfiguration(_api, _skey,
-                _prodCode,
-                _appName,
-                _appVersion);
-
-            this.LicenseManager = (LicenseManager)LicenseManager.GetInstance();
+            //configuring
+            _licenseManager = (LicenseManager)LicenseManager.GetInstance();
         }
 
         private void Awake()
+        {
+            InitLicenseManager();
+
+            _licenseChecker = GameObject.Find(LICENSE_CHECKER_NAME);
+            if (_licenseChecker == null)
+            {
+                _licenseChecker = new GameObject(LICENSE_CHECKER_NAME);
+                _licenseChecker.AddComponent<LicenseSpringInfo>();
+            }
+
+        }
+
+        private void InitLicenseManager()
         {
             //TODO :license path, this still producing errors, had to run as administrator which is very unlikely to happen
             LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
@@ -71,25 +89,24 @@ namespace LicenseSpring.Unity
                 HardwareID = System.Guid.NewGuid().ToString(),
                 EnableLogging = true,
                 CollectHostNameAndLocalIP = true,
-                LicenseFilePath = Application.persistentDataPath
+                LicenseFilePath = Application.dataPath
             };
 
-            //configuring
-            this.LicenseManager.Initialize(_licenseConfig);
+            _licenseConfig = new LicenseSpringConfiguration(_api, _skey,
+                _prodCode,
+                _appName,
+                _appVersion,
+                extendedOptions: licenseSpringExtendedOptions);
+
             //initializing manually
-            IsInitialized = LicenseManager.IsInitialized();
+            _licenseManager.Initialize(_licenseConfig);
 
-            //this where we hook to unity engine internal script initialization
-            if (_INSTANCE == null || _INSTANCE != this)
-                _INSTANCE = this;
+            IsInitialized = UnityLicenseManager.IsInitialized();
+        }
 
-            _licenseChecker = GameObject.Find(LICENSE_CHECKER_NAME);
-            if(_licenseChecker == null)
-            {
-                _licenseChecker = new GameObject(LICENSE_CHECKER_NAME);
-                _licenseChecker.AddComponent<LicenseSpringInfo>();
-            }
-
+        private void OnPreRender()
+        {
+            
         }
     } 
 }
