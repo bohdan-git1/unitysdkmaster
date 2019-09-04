@@ -1,71 +1,89 @@
-﻿using LicenseSpring;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
+
 using UnityEngine;
+using UnityEngine.Windows;
 
-//tentative names, this will be move out to seperate dll and repacked and probably generated 
-//and installed to client machines
-public class AssetLicenseManager : MonoBehaviour
+using LicenseSpring;
+
+namespace LicenseSpring.Unity
 {
-    private static AssetLicenseManager _INSTANCE;
 
-    public static AssetLicenseManager Instance
+    //tentative names, this will be move out to seperate dll and repacked and probably generated 
+    //and installed to client machines
+    [DefaultExecutionOrder(-100), ExecuteAlways]
+    public class AssetLicenseManager : MonoBehaviour
     {
-        get
+        private static AssetLicenseManager _INSTANCE;
+        private GameObject _licenseHolder;
+        private string _api,
+                                _skey,
+                                _prodCode,
+                                _appName,
+                                _appVersion;
+
+        private LicenseSpringConfiguration _licenseConfig;
+
+        public static AssetLicenseManager Instance
         {
-            return _INSTANCE;
+            get
+            {
+                return _INSTANCE;
+            }
         }
-    }
 
-    public bool IsInitialized { get; private set; }
-    public License CurrentLicense { get; set; }
-    public LicenseManager LicenseManager { get; private set; }
+        public bool IsInitialized { get; private set; }
 
-    public AssetLicenseManager()
-    {
-        //all client specific api will be 'burn-in' into this api behaviour and made into a dll
-        var api = "afce72fb-9fba-406e-8d19-ffde5b0a7cad";
-        var skey = "Qc8EdU7DY-gMI87-JMueZWXdtJ0Ek_hS6dGC_SwusO8";
-        var productCode = "udu";
-        var appName = "Unity Asset Store Item Licensor";
-        var appVersion = "v.1.0";
-
-        //TODO :license path, this still producing errors, had to run as administrator
-        var licensePath = Path.Combine(Directory.GetCurrentDirectory(), "configs");
-        if (!Directory.Exists(licensePath))
-            Directory.CreateDirectory(licensePath);
-
-        LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
+        public License CurrentLicense
         {
-            HardwareID = System.Guid.NewGuid().ToString(),
-            EnableLogging = true,
-            CollectHostNameAndLocalIP = true,
-            LicenseFilePath = licensePath
-        };
+            get
+            {
+                return (License)LicenseManager.CurrentLicense();
+            }
+        }
 
-        //configuring
-        var licenseConfig = new LicenseSpringConfiguration(api, skey,
-            productCode,
-            appName,
-            appVersion,
-            extendedOptions: licenseSpringExtendedOptions);
+        public LicenseManager LicenseManager { get; private set; }
 
-        this.LicenseManager = (LicenseManager)LicenseManager.GetInstance();
-        this.LicenseManager.Initialize(licenseConfig);
+        public AssetLicenseManager()
+        {
+            //all client specific api will be 'burn-in' into this api behaviour and made into a dll
+            _api = "afce72fb-9fba-406e-8d19-ffde5b0a7cad";
+            _skey = "Qc8EdU7DY-gMI87-JMueZWXdtJ0Ek_hS6dGC_SwusO8";
+            _prodCode = "udu";
+            _appName = "Unity Asset Store Item Licensor";
+            _appVersion = "v.1.0";
 
-        IsInitialized = LicenseManager.IsInitialized();
-    }
+            _licenseConfig = new LicenseSpringConfiguration(_api, _skey,
+                _prodCode,
+                _appName,
+                _appVersion);
 
-    private void Awake()
-    {
-        //this where we hook to unity engine internal script initialization
-        if (_INSTANCE ==null || _INSTANCE != this)
-            _INSTANCE = this;
+            this.LicenseManager = (LicenseManager)LicenseManager.GetInstance();
+        }
 
-        //this is odd and hacked...we had to call it from unity own awake
-        //so we dont run into an error
-        CurrentLicense = (License)LicenseManager.CurrentLicense();
+        private void Awake()
+        {
+            //TODO :license path, this still producing errors, had to run as administrator which is very unlikely to happen
+            LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
+            {
+                HardwareID = System.Guid.NewGuid().ToString(),
+                EnableLogging = true,
+                CollectHostNameAndLocalIP = true,
+                LicenseFilePath = Application.persistentDataPath
+            };
 
-    }
+            //configuring
+            this.LicenseManager.Initialize(_licenseConfig);
+            //initializing manually
+            IsInitialized = LicenseManager.IsInitialized();
+
+            //this where we hook to unity engine internal script initialization
+            if (_INSTANCE == null || _INSTANCE != this)
+                _INSTANCE = this;
+
+            _licenseHolder = new GameObject("SpringLicense");
+            _licenseHolder.AddComponent<LicenseInfo>();
+
+            DontDestroyOnLoad(this);
+        }
+    } 
 }
