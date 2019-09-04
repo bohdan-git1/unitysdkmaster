@@ -18,23 +18,38 @@ namespace LicenseSpring.Unity
     [DefaultExecutionOrder(-10)]
     internal class LicenseSpringInfo : MonoBehaviour
     {
-        private GameObject _trialWarning;
-
         private void Awake()
         {
+            var uiGameObject = GameObject.FindObjectOfType<LicenseSpringUI>();
+            if (uiGameObject == null)
+            {
+                uiGameObject = new GameObject(LicenseSpringUI.UI_NAME)
+                    .AddComponent<LicenseSpringUI>();
+            }
 
             var license = LicenseSpringUnityManager.Instance.CurrentLicense;
             if (license == null)
             {
-                throw new UnityEngine.UnityException("License is not issued");
+                ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b)=> {
+                    m.Message(UnityLicenseMessageType.LicenseInvalid, "License not issued");
+                });
             }
 
 
             if (!license.IsActive())
-                throw new UnityEngine.UnityException("License is not active");
+            {
+                ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
+                    m.Message(UnityLicenseMessageType.LicenseInActive, "License inactive");
+                });
+            }
 
             if (!license.IsExpired())
-                throw new UnityEngine.UnityException("License is expired");
+            {
+                ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
+                    m.Message(UnityLicenseMessageType.LicenseExpired, "License is Expired");
+                    m.SetSender(this.gameObject);
+                });
+            }
 
             //more will be added
             if (!license.IsTrial())
@@ -44,6 +59,18 @@ namespace LicenseSpring.Unity
             }
 
         }
+
+        public void RegisterTrial(string email = null)
+        {
+            var key = LicenseSpringUnityManager.Instance.LicenseManager.GetTrialKey(email);
+            LicenseSpringUnityManager.Instance.LicenseManager.ActivateLicense(key);
+        }
+
+        public void Register(string key)
+        {
+            LicenseSpringUnityManager.Instance.LicenseManager.ActivateLicense(key);
+        }
+
     }
 
 }
