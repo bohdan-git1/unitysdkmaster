@@ -11,11 +11,14 @@ namespace LicenseSpring.Unity
     //tentative names, this will be move out to seperate dll and repacked and probably generated 
     //and installed to client machines
     [DefaultExecutionOrder(-100), ExecuteAlways]
-    public class AssetLicenseManager : MonoBehaviour
+    public class LicenseSpringUnityManager : MonoBehaviour
     {
-        private static AssetLicenseManager _INSTANCE;
-        private GameObject _licenseHolder;
-        private string _api,
+        const string LICENSE_CHECKER_NAME = "LICENSE-CHECKER";
+
+        private static 
+            LicenseSpringUnityManager    _INSTANCE;
+        private GameObject              _licenseChecker;
+        private string          _api,
                                 _skey,
                                 _prodCode,
                                 _appName,
@@ -23,7 +26,7 @@ namespace LicenseSpring.Unity
 
         private LicenseSpringConfiguration _licenseConfig;
 
-        public static AssetLicenseManager Instance
+        public static LicenseSpringUnityManager Instance
         {
             get
             {
@@ -43,7 +46,7 @@ namespace LicenseSpring.Unity
 
         public LicenseManager LicenseManager { get; private set; }
 
-        public AssetLicenseManager()
+        public LicenseSpringUnityManager()
         {
             //all client specific api will be 'burn-in' into this api behaviour and made into a dll
             _api = "afce72fb-9fba-406e-8d19-ffde5b0a7cad";
@@ -80,10 +83,13 @@ namespace LicenseSpring.Unity
             if (_INSTANCE == null || _INSTANCE != this)
                 _INSTANCE = this;
 
-            _licenseHolder = new GameObject("SpringLicense");
-            _licenseHolder.AddComponent<LicenseInfo>();
+            _licenseChecker = GameObject.Find(LICENSE_CHECKER_NAME);
+            if(_licenseChecker == null)
+            {
+                _licenseChecker = new GameObject(LICENSE_CHECKER_NAME);
+                _licenseChecker.AddComponent<LicenseSpringInfo>();
+            }
 
-            DontDestroyOnLoad(this);
         }
     } 
 }

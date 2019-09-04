@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace LicenseSpring.Unity
 {
-    public interface ILicenseBehaviour
+    /// <summary>
+    /// License Spring Behaviour Interface
+    /// </summary>
+    public interface ILSPBehaviour
     {
         bool AllowableFeature { get; }
     }

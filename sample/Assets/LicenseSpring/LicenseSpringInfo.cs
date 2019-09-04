@@ -16,17 +16,16 @@ namespace LicenseSpring.Unity
     /// Do not modify execution order
     /// </summary>
     [DefaultExecutionOrder(-10)]
-    internal class LicenseInfo : MonoBehaviour
+    internal class LicenseSpringInfo : MonoBehaviour
     {
         private GameObject _trialWarning;
 
         private void Awake()
         {
 
-            var license = AssetLicenseManager.Instance.CurrentLicense;
+            var license = LicenseSpringUnityManager.Instance.CurrentLicense;
             if (license == null)
             {
-                EventSystem.current.BroadcastMessage("LicenseReceiver", "License is not issued", SendMessageOptions.DontRequireReceiver);
                 throw new UnityEngine.UnityException("License is not issued");
             }
 
@@ -43,9 +42,8 @@ namespace LicenseSpring.Unity
                 var currentDate = DateTime.Now;
                 var validatyPeriod = license.ValidityPeriod();
             }
+
         }
-
-
     }
 
 }

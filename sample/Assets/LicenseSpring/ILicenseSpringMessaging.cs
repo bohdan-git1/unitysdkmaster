@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace LicenseSpring.Unity
 {
-    public class ExecutionOrder
+    public interface ILicenseSpringMessaging
     {
-        
+
     }
 }

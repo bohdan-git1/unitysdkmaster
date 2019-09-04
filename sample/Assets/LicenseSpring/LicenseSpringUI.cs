@@ -4,8 +4,7 @@ using UnityEngine.UI;
 namespace LicenseSpring.Unity
 {
 
-    [ExecuteInEditMode]
-    public class LicenseSpringUI : MonoBehaviour
+    public class LicenseSpringUI : MonoBehaviour, ILicenseSpringMessaging
     {
         public Font CustomFont;
 
@@ -27,7 +26,6 @@ namespace LicenseSpring.Unity
 
             BgLicense.sprite = BackgroundAskLicense == null ? BgLicense.sprite : BackgroundAskLicense;
             BgWarning.sprite = BackgroundWarning == null ? BgWarning.sprite : BackgroundWarning;
-
         }
 
     } 
