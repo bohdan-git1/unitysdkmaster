@@ -101,7 +101,6 @@ namespace LicenseSpring.Unity
 
             //initializing manually
             _licenseManager.Initialize(_licenseConfig);
-
             IsInitialized = UnityLicenseManager.IsInitialized();
         }
 
