@@ -15,67 +15,68 @@ namespace LicenseSpring.Unity
     /// usable to asset creator and game developer alike.
     /// Do not modify execution order
     /// </summary>
-    [DefaultExecutionOrder(-10)]
-    internal class LicenseSpringInfo : MonoBehaviour
+    [DefaultExecutionOrder(-10), ExecuteInEditMode]
+    public class LicenseSpringInfo : MonoBehaviour
     {
+        ILicense            _currentLicense;
+        ILicenseBehaviour   _warningScript;
+
         private void Awake()
         {
-            var uiGameObject = GameObject.FindObjectOfType<LicenseSpringUI>();
-            if (uiGameObject == null)
-            {
-                uiGameObject = new GameObject(LicenseSpringUI.UI_NAME)
-                    .AddComponent<LicenseSpringUI>();
-            }
-
-            var license = LicenseSpringUnityManager.Instance
+            _currentLicense = LicenseSpringUnityManager.Instance
                 .UnityLicenseManager.CurrentLicense();
-            if (license == null)
+
+            CheckLicenseStatus();
+        }
+
+        private IEnumerator Start()
+        {
+            while (true)
             {
-                ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b)=> {
-                    m.Message(UnityLicenseMessageType.LicenseInvalid, "License not issued");
-                });
+                yield return new WaitForSeconds(30);
+                CheckLicenseStatus();
+            }
+        }
+
+        private void CheckLicenseStatus()
+        {
+            _warningScript = Camera.main.gameObject.GetComponent<ILicenseBehaviour>();
+
+            if (_currentLicense == null)
+            {
+                if (_warningScript == null)
+                    Camera.main.gameObject.AddComponent<UnLicensed>();
+                
+                throw new UnityEngine.UnityException("License not specified");
             }
             else
             {
-                if (!license.IsActive())
+                if (!_currentLicense.IsActive())
                 {
-                    ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
-                        m.Message(UnityLicenseMessageType.LicenseInActive, "License inactive");
-                    });
+
+                    if (_warningScript == null)
+                        Camera.main.gameObject.AddComponent<UnLicensed>();
+                    throw new UnityEngine.UnityException("License Inactive");
                 }
 
-                if (!license.IsExpired())
+                if (!_currentLicense.IsExpired())
                 {
-                    ExecuteEvents.Execute<ILicenseSpringMessaging>(uiGameObject.gameObject, null, (m, b) => {
-                        m.Message(UnityLicenseMessageType.LicenseExpired, "License is Expired");
-                        m.SetSender(this.gameObject);
-                    });
+                    if (_warningScript == null)
+                        Camera.main.gameObject.AddComponent<WarningLicenseExpired>();
+                    throw new UnityEngine.UnityException("License is Expired");
                 }
 
                 //more will be added
-                if (!license.IsTrial())
+                if (!_currentLicense.IsTrial())
                 {
                     var currentDate = DateTime.Now;
-                    var validatyPeriod = license.ValidityPeriod();
+                    var validatyPeriod = _currentLicense.ValidityPeriod();
                 }
 
             }
-
-
-
         }
 
-        public void RegisterTrial(string email = null)
-        {
-            var key = LicenseSpringUnityManager.Instance.UnityLicenseManager.GetTrialKey(email);
-            LicenseSpringUnityManager.Instance.UnityLicenseManager.ActivateLicense(key);
-        }
-
-        public void Register(string key)
-        {
-            LicenseSpringUnityManager.Instance.UnityLicenseManager.ActivateLicense(key);
-        }
-
+       
     }
 
 }

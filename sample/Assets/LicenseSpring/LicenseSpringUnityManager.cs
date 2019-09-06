@@ -9,7 +9,7 @@ namespace LicenseSpring.Unity
 
     //tentative names, this will be move out to seperate dll and repacked and probably generated 
     //and installed to client machines
-    [DefaultExecutionOrder(-100), ExecuteAlways]
+    [DefaultExecutionOrder(-100), ExecuteInEditMode]
     public class LicenseSpringUnityManager : MonoBehaviour
     {
         const string LICENSE_CHECKER_NAME = "LICENSE-CHECKER";
@@ -40,7 +40,12 @@ namespace LicenseSpring.Unity
             }
         }
 
-        public bool IsInitialized { get; private set; }
+        public bool IsInitialized {
+            get
+            {
+                return _licenseManager.IsInitialized();
+            }
+        }
 
         public LicenseManager UnityLicenseManager {
             get {
@@ -76,18 +81,20 @@ namespace LicenseSpring.Unity
             {
                 _licenseChecker = new GameObject(LICENSE_CHECKER_NAME);
                 _licenseChecker.AddComponent<LicenseSpringInfo>();
+                _licenseChecker.gameObject.SetActive(true);
             }
 
         }
 
         private void InitLicenseManager()
         {
-            //TODO :license path, this still producing errors, had to run as administrator which is very unlikely to happen
+            //TODO :license path, this still producing errors, had to run as administrator which is very unlikely to happen [fix]
             string licPath = Path.Combine(Application.dataPath, "config");
-
+            //TODO : add internal compilation switch #if UNITY_BUILD all this license path and must be omited filled with default
+            //value.
             LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
             {
-                HardwareID = System.Guid.NewGuid().ToString(),
+                HardwareID = SystemInfo.deviceUniqueIdentifier,
                 EnableLogging = false,
                 CollectHostNameAndLocalIP = true,
                 LicenseFilePath = licPath
@@ -101,12 +108,7 @@ namespace LicenseSpring.Unity
 
             //initializing manually
             _licenseManager.Initialize(_licenseConfig);
-            IsInitialized = UnityLicenseManager.IsInitialized();
         }
 
-        private void OnPreRender()
-        {
-            
-        }
     } 
 }

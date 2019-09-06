@@ -9,7 +9,7 @@ namespace LicenseSpring.Unity
     /// <summary>
     /// License Spring Behaviour Interface
     /// </summary>
-    public interface ILSPBehaviour
+    public interface ILicenseBehaviour
     {
         bool AllowableFeature { get; }
     }
