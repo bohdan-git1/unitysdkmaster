@@ -32,6 +32,7 @@ namespace LicenseSpring.Unity.Tools
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/LicenseSpring/Editor/AssetLicenseEditor.uss");
+
             _root.styleSheets.Add(styleSheet);
             _assetLicenseManager = this.target as LicenseSpringUnityManager;
         }

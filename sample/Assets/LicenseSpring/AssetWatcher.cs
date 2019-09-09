@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
+using System.IO;
 
 namespace LicenseSpring.Unity
 {
@@ -14,6 +15,9 @@ namespace LicenseSpring.Unity
     public class AssetWatcher
     {
         static LicenseSpringUnityManager _licenseSpringUnityManager;
+
+        static FileStream   _fs;
+        static string       _existingLocalKeyFile;
 
         static Rect area = new Rect(20, 20, 250, 60);
         static Color areaColor;
@@ -29,6 +33,25 @@ namespace LicenseSpring.Unity
 
             //creating license game object and license checker
             InitLicense();
+        }
+
+        private static void CheckLocalFile()
+        {
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "lic");
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            //check if there is existance of a shared key
+            var keys = Directory.GetFiles(folderPath, "*.skey");
+            if (keys?.Length > 0)
+            {
+                _existingLocalKeyFile = keys[0];
+            }
+            else
+            {
+
+            }
         }
 
         #region Editor Events

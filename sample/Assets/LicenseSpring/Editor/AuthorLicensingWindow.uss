@@ -1,0 +1,18 @@
+#lblHeader Label {
+	margin-left:10px;
+	margin-right:10px;
+    font-size: 14;
+    font-weight: bold;
+}
+
+TextField {
+	margin-left:10px;
+	margin-right:10px;
+	font-size : 16;
+}
+
+Button {
+	font-size:16;
+	margin-left:10px;
+	margin-right:10px;
+}
