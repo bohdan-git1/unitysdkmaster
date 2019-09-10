@@ -1,10 +1,6 @@
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
-using System;
-using LicenseSpring;
-using LicenseSpring.Unity;
+using LicenseSpring.Unity.Plugins;
 
 namespace LicenseSpring.Unity.Tools
 {
@@ -27,11 +23,11 @@ namespace LicenseSpring.Unity.Tools
             _root = new VisualElement();
 
             // Import UXML
-            _visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/LicenseSpring/Editor/AssetLicenseEditor.uxml");
+            _visualTreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Editor/AssetLicenseEditor.uxml");
 
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
-            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/LicenseSpring/Editor/AssetLicenseEditor.uss");
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Editor/AssetLicenseEditor.uss");
 
             _root.styleSheets.Add(styleSheet);
             _assetLicenseManager = this.target as LicenseSpringUnityManager;
@@ -61,12 +57,12 @@ namespace LicenseSpring.Unity.Tools
 
             if (!string.IsNullOrEmpty(key))
             {
-                var license = _assetLicenseManager.UnityLicenseManager.ActivateLicense(key);
+                //var license = _assetLicenseManager..ActivateLicense(key);
             }
             else
             {
-                var trialKey = _assetLicenseManager.UnityLicenseManager.GetTrialKey(email);
-                var license = _assetLicenseManager.UnityLicenseManager.ActivateLicense(trialKey);
+                //var trialKey = _assetLicenseManager.UnityLicenseManager.GetTrialKey(email);
+                //var license = _assetLicenseManager.UnityLicenseManager.ActivateLicense(trialKey);
             }
         }
     } 

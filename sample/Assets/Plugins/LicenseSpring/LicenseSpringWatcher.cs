@@ -4,6 +4,7 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using LicenseSpring.Unity.Helpers;
 
 namespace LicenseSpring.Unity.Plugins
 {
@@ -14,8 +15,8 @@ namespace LicenseSpring.Unity.Plugins
     [InitializeOnLoad]
     public class LicenseSpringWatcher
     {
-        private static LicenseManager _licenseManager;
-        private static LocalKey _licenseLokalKey;
+        private static LicenseManager   _licenseManager;
+        private static LocalKey         _licenseLokalKey;
 
         private static LicenseSpringUnityManager _licenseSpringUnityManager;
 
@@ -27,8 +28,15 @@ namespace LicenseSpring.Unity.Plugins
             EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
 
             _licenseLokalKey = CheckLocalFileSettings();
-            InitLicenseManager();
-            InitLicenseWatchdog();
+            if(_licenseLokalKey != null)
+            {
+                InitLicenseManager();
+                InitLicenseWatchdog();
+            }
+            else
+            {
+                EditorApplication.ExecuteMenuItem("License Spring/Asset Author Licensing");
+            }
         }
 
 
@@ -42,7 +50,7 @@ namespace LicenseSpring.Unity.Plugins
 
         private static void OnEditorUpdateCycle()
         {
-            if (_licenseManager.IsInitialized())
+            if (_licenseManager != null && _licenseManager.IsInitialized())
             {
                 QueryLicenseWatchdog();
             }
@@ -52,7 +60,9 @@ namespace LicenseSpring.Unity.Plugins
 
         #region Internal Methods
 
-
+        /// <summary>
+        /// Watchdog routine to monitor wactcher game objects
+        /// </summary>
         private static void QueryLicenseWatchdog()
         {
             if (_licenseSpringUnityManager == null)
@@ -64,10 +74,17 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         private static void InitLicenseWatchdog()
         {
-            _licenseSpringUnityManager = new GameObject(WATCH_NAME)
-                .AddComponent<LicenseSpringUnityManager>();
-
-            _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
+            //sanity check if in case there is possibility that we miss out something
+            if (_licenseManager != null)
+            {
+                _licenseSpringUnityManager = new GameObject(WATCH_NAME)
+                    .AddComponent<LicenseSpringUnityManager>();
+                _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
+            }
+            else
+            {
+                throw new UnityEngine.UnityException("License Manager must be initiate first");
+            }
         }
 
         /// <summary>
@@ -75,16 +92,10 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         private static LocalKey CheckLocalFileSettings()
         {
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "lic");
-
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-            //looking for file with skey extension
-            var keys = Directory.GetFiles(folderPath, "*.skey");
-            if (keys?.Length > 0)
+           
+            if (LicenseFileHelper.CheckLocalConfiguration())
             {
-                var filePath = keys[0];
-                return ReadApiFileKey(filePath);
+                return LicenseFileHelper.ReadApiFileKey();
             }
             else
             {
@@ -118,31 +129,9 @@ namespace LicenseSpring.Unity.Plugins
 
             _licenseManager = (LicenseManager)LicenseManager.GetInstance();
             _licenseManager.Initialize(licenseConfig);
-
         }
 
-        public static LocalKey ReadApiFileKey(string licenseApiKeyPath)
-        {
-            File.Decrypt(licenseApiKeyPath);
-
-            using (FileStream fs = new FileStream(licenseApiKeyPath, FileMode.Open))
-            {
-                var bf = new BinaryFormatter();
-
-                return (LocalKey)bf.Deserialize(fs);
-            }
-        }
-
-        public static void WriteApiFileKey(LocalKey localKey, string saveFilePath)
-        {
-            using (FileStream fs = new FileStream(saveFilePath, FileMode.OpenOrCreate))
-            {
-                var bf = new BinaryFormatter();
-                bf.Serialize(fs, localKey);
-            }
-
-            File.Encrypt(saveFilePath);
-        }
+       
 
         #endregion
     }

@@ -21,5 +21,6 @@ xsi:schemaLocation="
   <engine:TextField name="inputApiAppVersion" text="Api Version"></engine:TextField>
 
   <engine:Button name="btnGenerateFile" text="Create Deployment KeyFile"/>
+  <engine:Button name="btnGenerateDevFile" text="Create Development KeyFile"/>
 
 </engine:UXML>

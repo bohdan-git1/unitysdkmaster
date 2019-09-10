@@ -35,23 +35,36 @@ namespace LicenseSpring.Unity.Plugins
             {
                 yield return new WaitForSeconds(60);
                 //check license status per 60 seconds
+                var notification = FindObjectOfType<LicenseSpringNotification>();
                 if (AppLicenseManager.IsInitialized())
                 {
                     _currentLicense = (License)AppLicenseManager.CurrentLicense();
                     if (_currentLicense == null)
                     {
+                        Notify(notification, LicenseStatus.Unknown);
 
                     }
                     else
                     {
-
+                        if (_currentLicense.IsExpired())
+                            Notify(notification, LicenseStatus.Expired);
                     }
                 }
                 else
                 {
-
+                    Notify(notification, LicenseStatus.Disabled);
                 }
             }
+        }
+
+        private void Notify(LicenseSpringNotification licenseSpringNotification,LicenseStatus licenseStatus)
+        {
+            if(licenseSpringNotification == null)
+            {
+                licenseSpringNotification = Camera.main.gameObject.AddComponent<LicenseSpringNotification>();
+            }
+
+            licenseSpringNotification.AppLicenseStatus = licenseStatus;
         }
     }
 }
