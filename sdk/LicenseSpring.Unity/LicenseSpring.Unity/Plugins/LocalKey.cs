@@ -4,6 +4,7 @@ using System.Text;
 
 namespace LicenseSpring.Unity.Plugins
 {
+    [Serializable]
     public class LocalKey
     { 
         public string ApiKey { get; set; }

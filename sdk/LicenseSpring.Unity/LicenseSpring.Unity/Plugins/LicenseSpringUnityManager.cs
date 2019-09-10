@@ -1,6 +1,7 @@
 ﻿using LicenseSpring.Unity.Assets;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using UnityEngine;
 
@@ -18,19 +19,15 @@ namespace LicenseSpring.Unity.Plugins
         /// all of the used license behaviour in the scenes.
         /// </summary>
         public List<ILicenseBehaviour>  LicenseBehaviours;
-        public LocalKey                 LocalKeySetting;
-
-        private string _apiKey, 
-            _sharedKey, 
-            _productCode, 
-            _appName, 
-            _appVersion;
-
+        /// <summary>
+        /// Local license manager.
+        /// </summary>
+        public LicenseManager           AppLicenseManager { get; set; }
 
         private void Awake()
         {
             //checking local written api key and settings, if not exist than prompt the api key and shared key
-
+            
         }
     }
 }

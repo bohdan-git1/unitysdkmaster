@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace LicenseSpring.Unity.Plugins
 {
@@ -14,24 +15,29 @@ namespace LicenseSpring.Unity.Plugins
     public class LicenseSpringWatcher
     {
         private static LicenseManager   _licenseManager;
-        private static bool             _isAuthorMode;
-        private static string           _apiKeyPath;
+        private static LocalKey         _licenseLokalKey;
+
+        private static LicenseSpringUnityManager _licenseSpringUnityManager;
+        private const string WATCH_NAME = "License Manager Runner";
 
         static LicenseSpringWatcher()
         {
             EditorApplication.update            += OnEditorUpdateCycle;
             EditorApplication.hierarchyChanged  += OnEditorHierarchyChanged;
 
-            CheckLocalFileSettings(out _apiKeyPath);
+            _licenseLokalKey = CheckLocalFileSettings();
             InitLicenseManager();
+            InitLicenseWatchdog();
         }
+
 
         #region EditorEvents
 
         private static void OnEditorHierarchyChanged()
         {
-
+            QueryLicenseWatchdog();
         }
+
 
         private static void OnEditorUpdateCycle()
         {
@@ -42,10 +48,28 @@ namespace LicenseSpring.Unity.Plugins
 
         #region Internal Methods
 
+
+        private static void QueryLicenseWatchdog()
+        {
+            if (_licenseSpringUnityManager == null)
+                InitLicenseWatchdog();
+        }
+
+        /// <summary>
+        /// Creating license watcher game object
+        /// </summary>
+        private static void InitLicenseWatchdog()
+        {
+            _licenseSpringUnityManager = new GameObject(WATCH_NAME)
+                .AddComponent<LicenseSpringUnityManager>();
+
+            _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
+        }
+
         /// <summary>
         /// CheckLocalFileSettings, check local file cache for settings and load it to license manager
         /// </summary>
-        private static bool CheckLocalFileSettings(out string filePath)
+        private static LocalKey CheckLocalFileSettings()
         {
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "lic");
 
@@ -55,16 +79,15 @@ namespace LicenseSpring.Unity.Plugins
             var keys = Directory.GetFiles(folderPath, "*.skey");
             if(keys?.Length > 0)
             {
-                filePath = keys[0];
-                return true;
+                var filePath = keys[0];
+                return ReadApiFileKey(filePath);
             }
             else
             {
                 if (EditorApplication.isPlaying)
                     EditorApplication.ExitPlaymode();
 
-                filePath = string.Empty;
-                return false;
+                return null;
             }
         }
 
@@ -73,24 +96,48 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         private static void InitLicenseManager()
         {
+            var licenseFilePath = Path.Combine(Application.persistentDataPath, "lic.bin");
             LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
             {
                 HardwareID = SystemInfo.deviceUniqueIdentifier,
                 EnableLogging = false,
                 CollectHostNameAndLocalIP = true,
-                LicenseFilePath = licPath
+                LicenseFilePath = licenseFilePath
             };
 
+            var licenseConfig = new LicenseSpringConfiguration(_licenseLokalKey.ApiKey,
+                _licenseLokalKey.SharedKey,
+                _licenseLokalKey.ProductCode,
+                _licenseLokalKey.ApplicationName,
+                _licenseLokalKey.ApplicationVersion, 
+                licenseSpringExtendedOptions);
+
+            _licenseManager = (LicenseManager)LicenseManager.GetInstance();
+            _licenseManager.Initialize(licenseConfig);
             
+        }
 
-            _licenseConfig = new LicenseSpringConfiguration(_api, _skey,
-                _prodCode,
-                _appName,
-                _appVersion,
-                extendedOptions: licenseSpringExtendedOptions);
+        public static LocalKey ReadApiFileKey(string licenseApiKeyPath)
+        {
+            File.Decrypt(licenseApiKeyPath);
 
-            //initializing manually
-            _licenseManager.Initialize(_licenseConfig);
+            using (FileStream fs = new FileStream(licenseApiKeyPath, FileMode.Open))
+            {
+                var bf = new BinaryFormatter();
+
+                return (LocalKey)bf.Deserialize(fs);
+            }
+        }
+
+        public static void WriteApiFileKey(LocalKey localKey, string saveFilePath)
+        {
+            using (FileStream fs = new FileStream(saveFilePath, FileMode.OpenOrCreate))
+            {
+                var bf = new BinaryFormatter();
+                bf.Serialize(fs, localKey);
+            }
+
+            File.Encrypt(saveFilePath);
         }
 
         #endregion
