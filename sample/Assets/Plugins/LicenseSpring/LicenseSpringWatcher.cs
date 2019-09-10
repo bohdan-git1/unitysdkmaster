@@ -14,17 +14,17 @@ namespace LicenseSpring.Unity.Plugins
     [InitializeOnLoad]
     public class LicenseSpringWatcher
     {
-        private static LicenseManager               _licenseManager;
-        private static LocalKey                     _licenseLokalKey;
+        private static LicenseManager _licenseManager;
+        private static LocalKey _licenseLokalKey;
 
-        private static LicenseSpringUnityManager    _licenseSpringUnityManager;
+        private static LicenseSpringUnityManager _licenseSpringUnityManager;
 
         private const string WATCH_NAME = "License Manager Runner";
 
         static LicenseSpringWatcher()
         {
-            EditorApplication.update            += OnEditorUpdateCycle;
-            EditorApplication.hierarchyChanged  += OnEditorHierarchyChanged;
+            EditorApplication.update += OnEditorUpdateCycle;
+            EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
 
             _licenseLokalKey = CheckLocalFileSettings();
             InitLicenseManager();
@@ -81,7 +81,7 @@ namespace LicenseSpring.Unity.Plugins
                 Directory.CreateDirectory(folderPath);
             //looking for file with skey extension
             var keys = Directory.GetFiles(folderPath, "*.skey");
-            if(keys?.Length > 0)
+            if (keys?.Length > 0)
             {
                 var filePath = keys[0];
                 return ReadApiFileKey(filePath);
@@ -113,12 +113,12 @@ namespace LicenseSpring.Unity.Plugins
                 _licenseLokalKey.SharedKey,
                 _licenseLokalKey.ProductCode,
                 _licenseLokalKey.ApplicationName,
-                _licenseLokalKey.ApplicationVersion, 
+                _licenseLokalKey.ApplicationVersion,
                 licenseSpringExtendedOptions);
 
             _licenseManager = (LicenseManager)LicenseManager.GetInstance();
             _licenseManager.Initialize(licenseConfig);
-            
+
         }
 
         public static LocalKey ReadApiFileKey(string licenseApiKeyPath)

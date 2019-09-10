@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LicenseSpring.Unity
+
+namespace LicenseSpring.Unity.Assets
 {
-    /// <summary>
-    /// License Spring Behaviour Interface
-    /// </summary>
     public interface ILicenseBehaviour
     {
         bool AllowableFeature { get; }
+        void CheckAllowableFeature();
     }
 }
