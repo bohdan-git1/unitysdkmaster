@@ -5,16 +5,16 @@ using LicenseSpring.Unity.Plugins;
 namespace LicenseSpring.Unity.Tools
 {
 
-    [CustomEditor(typeof(LicenseSpringUnityManager))]
+    //[CustomEditor(typeof(LicenseSpringUnityManager))]
     public class AssetLicenseEditor : Editor
     {
         LicenseSpringUnityManager _assetLicenseManager;
-        License             _currentLicense;
+        License _currentLicense;
 
-        VisualElement       _root;
-        VisualTreeAsset     _visualTreeAsset;
+        VisualElement _root;
+        VisualTreeAsset _visualTreeAsset;
 
-        TextField   _txtKey, 
+        TextField _txtKey,
                     _txtEmail;
 
         public void OnEnable()

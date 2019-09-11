@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using LicenseSpring.Unity.Helpers;
 
+
 namespace LicenseSpring.Unity.Plugins
 {
 
@@ -26,6 +27,8 @@ namespace LicenseSpring.Unity.Plugins
         {
             EditorApplication.update += OnEditorUpdateCycle;
             EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
+
+            Debug.Log("Watcher log init");
 
             _licenseLokalKey = CheckLocalFileSettings();
             if(_licenseLokalKey != null)
@@ -50,10 +53,10 @@ namespace LicenseSpring.Unity.Plugins
 
         private static void OnEditorUpdateCycle()
         {
-            if (_licenseManager != null && _licenseManager.IsInitialized())
-            {
-                QueryLicenseWatchdog();
-            }
+            //if (_licenseManager != null && _licenseManager.IsInitialized())
+            //{
+            //    QueryLicenseWatchdog();
+            //}
         }
 
         #endregion
@@ -77,8 +80,12 @@ namespace LicenseSpring.Unity.Plugins
             //sanity check if in case there is possibility that we miss out something
             if (_licenseManager != null)
             {
-                _licenseSpringUnityManager = new GameObject(WATCH_NAME)
-                    .AddComponent<LicenseSpringUnityManager>();
+                _licenseSpringUnityManager = GameObject.FindObjectOfType<LicenseSpringUnityManager>();
+                if(_licenseSpringUnityManager == null)
+                {
+                    _licenseSpringUnityManager = new GameObject(WATCH_NAME).AddComponent<LicenseSpringUnityManager>();
+                }
+                
                 _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
             }
             else

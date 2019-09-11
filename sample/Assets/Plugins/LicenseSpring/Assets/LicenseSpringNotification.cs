@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace LicenseSpring.Unity.Assets
 {
+    [ExecuteInEditMode]
     public class LicenseSpringNotification : MonoBehaviour
     {
         public LicenseStatus AppLicenseStatus;
