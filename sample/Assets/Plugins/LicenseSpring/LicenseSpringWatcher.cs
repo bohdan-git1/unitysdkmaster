@@ -17,7 +17,7 @@ namespace LicenseSpring.Unity.Plugins
     public class LicenseSpringWatcher
     {
         private static LicenseManager   _licenseManager;
-        private static LocalKey         _licenseLokalKey;
+        private static LicenseSpringLocalKey         _licenseLokalKey;
 
         private static LicenseSpringUnityManager _licenseSpringUnityManager;
 
@@ -83,9 +83,11 @@ namespace LicenseSpring.Unity.Plugins
                 _licenseSpringUnityManager = GameObject.FindObjectOfType<LicenseSpringUnityManager>();
                 if(_licenseSpringUnityManager == null)
                 {
-                    _licenseSpringUnityManager = new GameObject(WATCH_NAME).AddComponent<LicenseSpringUnityManager>();
+                    var LicenseGameObject = new GameObject(WATCH_NAME);
+                    _licenseSpringUnityManager = LicenseGameObject.AddComponent<LicenseSpringUnityManager>();
                 }
-                
+
+                _licenseSpringUnityManager.enabled = true;
                 _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
             }
             else
@@ -97,7 +99,7 @@ namespace LicenseSpring.Unity.Plugins
         /// <summary>
         /// CheckLocalFileSettings, check local file cache for settings and load it to license manager
         /// </summary>
-        private static LocalKey CheckLocalFileSettings()
+        private static LicenseSpringLocalKey CheckLocalFileSettings()
         {
            
             if (LicenseFileHelper.CheckLocalConfiguration())

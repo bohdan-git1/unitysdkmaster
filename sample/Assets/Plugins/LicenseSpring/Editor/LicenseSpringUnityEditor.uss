@@ -1,9 +1,14 @@
-Label {
-    font-size: 20;
-    font-weight: bold;
-    text-color: rgb(68, 138, 255);
+
+TextField {
+	padding-top:10px;
+	font-size:12px;
 }
 
-VisualElement.headerImage {
-	background-image : resource("UI/logo_nobackground");
+TextField#txtKey {
+	height:100px;
+}
+
+Button#btnSubmit{
+	background-color: #4CAF50;
+	font-size:16px;
 }

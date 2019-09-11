@@ -26,7 +26,7 @@ namespace LicenseSpring.Unity.Helpers
                 return false;
         }
 
-        public static LocalKey ReadApiFileKey()
+        public static LicenseSpringLocalKey ReadApiFileKey()
         {
             var saveFilePath = Path.Combine(Directory.GetCurrentDirectory(), "lic", "key.skey");
             
@@ -36,11 +36,11 @@ namespace LicenseSpring.Unity.Helpers
             {
                 
                 var bf = new BinaryFormatter();
-                return (LocalKey)bf.Deserialize(fs);
+                return (LicenseSpringLocalKey)bf.Deserialize(fs);
             }
         }
 
-        public static void WriteApiFileKey(LocalKey localKey)
+        public static void WriteApiFileKey(LicenseSpringLocalKey localKey)
         {
             var saveFilePath = Path.Combine(Directory.GetCurrentDirectory(), "lic", "key.skey");
             var jsonRep = UnityEngine.JsonUtility.ToJson(localKey);

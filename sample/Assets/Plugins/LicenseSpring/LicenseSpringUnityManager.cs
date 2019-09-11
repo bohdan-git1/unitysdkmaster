@@ -23,35 +23,20 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         public LicenseManager AppLicenseManager { get; set; }
 
-        private License _currentLicense;
+        private License     _currentLicense;
 
         private void Awake()
         {
-            Debug.Log("Awake Manager");
-
-            var notification = FindObjectOfType<LicenseSpringNotification>();
-            if (AppLicenseManager != null && AppLicenseManager.IsInitialized())
-            {
-                _currentLicense = (License)AppLicenseManager.CurrentLicense();
-                if (_currentLicense == null)
-                {
-                    Notify(notification, LicenseStatus.Unknown);
-                }
-                else
-                {
-                    
-                    Notify(notification, _currentLicense.Status());
-                }
-            }
-            else
-            {
-                Notify(notification, LicenseStatus.Disabled);
-            }
+            InitNotificationSystem();
         }
 
-        private void Update()
+        private IEnumerator Start()
         {
-            Debug.Log("Update Warning");
+            while (true)
+            {
+                Debug.Log("License Spring Unity Manager");
+                yield return null;
+            }
         }
 
 
@@ -64,6 +49,28 @@ namespace LicenseSpring.Unity.Plugins
             }
 
             licenseSpringNotification.AppLicenseStatus = licenseStatus;
+        }
+
+        private void InitNotificationSystem()
+        {
+            var notification = FindObjectOfType<LicenseSpringNotification>();
+            if (AppLicenseManager != null && AppLicenseManager.IsInitialized())
+            {
+                _currentLicense = (License)AppLicenseManager.CurrentLicense();
+                if (_currentLicense == null)
+                {
+                    Notify(notification, LicenseStatus.Unknown);
+                }
+                else
+                {
+
+                    Notify(notification, _currentLicense.Status());
+                }
+            }
+            else
+            {
+                Notify(notification, LicenseStatus.Disabled);
+            }
         }
     }
 }

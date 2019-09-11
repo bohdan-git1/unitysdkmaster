@@ -3,7 +3,7 @@
 namespace LicenseSpring.Unity.Plugins
 {
     [Serializable]
-    public class LocalKey
+    public class LicenseSpringLocalKey
     {
         public bool IsDevelopment { get; set; }
         public string ApiKey { get; set; }

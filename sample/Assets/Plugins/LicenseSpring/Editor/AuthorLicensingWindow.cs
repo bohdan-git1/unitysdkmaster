@@ -56,7 +56,7 @@ public class AuthorLicensingWindow : EditorWindow
 
     private void OnbtnCreateDevClick()
     {
-        LocalKey localKey = new LocalKey {
+        LicenseSpringLocalKey localKey = new LicenseSpringLocalKey {
             ApiKey = _txtInputKey.text,
             ApplicationName = _txtProductName.text,
             IsDevelopment = true,
@@ -70,7 +70,7 @@ public class AuthorLicensingWindow : EditorWindow
 
     private void OnBtnCreateFileClick()
     {
-        LocalKey localKey = new LocalKey
+        LicenseSpringLocalKey localKey = new LicenseSpringLocalKey
         {
             ApiKey = _txtInputKey.text,
             ApplicationName = _txtProductName.text,
