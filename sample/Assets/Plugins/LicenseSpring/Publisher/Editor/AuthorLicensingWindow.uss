@@ -4,8 +4,7 @@
 	margin-top:10px;
 	filter:saturate(4);
 	display:flex;
-	height:100px;
-	flex-grow:1;
+	height:120px;
 	background-image: resource('UI/logo');
 }
 
@@ -26,4 +25,8 @@ Button {
 	font-size:16;
 	margin-left:10px;
 	margin-right:10px;
+}
+
+Button#btnGenerateFile{
+	-unity-background-image-tint-color: #2980b9;
 }

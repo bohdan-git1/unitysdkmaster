@@ -18,11 +18,15 @@ xsi:schemaLocation="
     <engine:Button name="btnSubmitEmail" text="Request Demo" focusable="true"/>
   </engine:VisualElement>
 
-
   <engine:VisualElement>
     <engine:TextField name="txtKey" text="Key from publisher"></engine:TextField>
     <engine:Button name="btnSubmit" text="Submit"/>
   </engine:VisualElement>
+
+  <engine:VisualElement class="space">
+  </engine:VisualElement>
+
+  <engine:Button name="btnReset" text="Reset License"></engine:Button>
 
   <engine:VisualElement class="space">
   </engine:VisualElement>

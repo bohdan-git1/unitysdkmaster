@@ -14,7 +14,8 @@ public class AuthorLicensingWindow : EditorWindow
     private TextField _txtProductVersion;
     private TextField _txtProductName;
 
-    private VisualElement  _headerImage;
+    private VisualElement           _headerImage;
+    private LicenseSpringLocalKey   _LocalKey;
 
     [MenuItem("License Spring/Publisher/Author Licensing")]
     public static void Init()
@@ -61,7 +62,6 @@ public class AuthorLicensingWindow : EditorWindow
 
         Button btnCreateDevFile = root.Q<Button>("btnGenerateDevFile");
         btnCreateDevFile.clickable.clicked += OnbtnCreateDevClick;
-        
     }
 
     private void OnbtnCreateDevClick()
@@ -95,5 +95,10 @@ public class AuthorLicensingWindow : EditorWindow
         };
 
         LicenseFileHelper.WriteApiFileKey(localKey, isDevMachine: false);
+    }
+
+    private void OnValidate()
+    {
+        
     }
 }

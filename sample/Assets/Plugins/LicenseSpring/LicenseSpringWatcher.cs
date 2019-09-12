@@ -64,9 +64,8 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         private static void QueryLicenseWatchdog()
         {
-            var licenseUnityManager = GameObject.FindObjectOfType<LicenseSpringUnityManager>();
-            if (_licenseSpringUnityManager == null)
-                _licenseSpringUnityManager = licenseUnityManager;
+
+            InitLicenseWatchdog();
 
             _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
             //get execute solely on editor.

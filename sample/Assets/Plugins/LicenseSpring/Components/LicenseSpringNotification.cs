@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LicenseSpring.Unity.Assets
+namespace LicenseSpring.Unity.Components
 {
     [ExecuteInEditMode]
     public class LicenseSpringNotification : MonoBehaviour

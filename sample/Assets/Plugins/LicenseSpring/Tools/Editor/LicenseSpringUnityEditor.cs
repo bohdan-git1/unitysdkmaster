@@ -18,6 +18,7 @@ public class LicenseSpringUnityEditor : Editor
 
     Button      _btnSubmit;
     Button      _btnRequestDemo;
+    Button      _btnReset;
 
     LicenseSpringUnityManager _target;
 
@@ -48,6 +49,7 @@ public class LicenseSpringUnityEditor : Editor
         //querying control
         _btnSubmit = root.Query<Button>("btnSubmit");
         _btnRequestDemo = root.Query<Button>("btnSubmitEmail");
+        _btnReset = root.Query<Button>("btnReset");
         
         _txtEmail = root.Query<TextField>("txtEmail");
         _txtKeyCode = root.Query<TextField>("txtKey");
@@ -60,6 +62,7 @@ public class LicenseSpringUnityEditor : Editor
         //events registration
         _btnSubmit.clickable.clicked += OnSubmitClick;
         _btnRequestDemo.clickable.clicked += OnBtnRequestDemo;
+        _btnReset.clickable.clicked += OnBtnReset;
 
         var license = _target.CheckCurrentLicense();
         if(license.IsTrial())
@@ -72,6 +75,11 @@ public class LicenseSpringUnityEditor : Editor
         }
 
         return root;
+    }
+
+    private void OnBtnReset()
+    {
+        _target.AppLicenseManager.ClearLocalStorage();
     }
 
     private void OnBtnRequestDemo()

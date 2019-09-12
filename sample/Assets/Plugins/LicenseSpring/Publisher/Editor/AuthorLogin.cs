@@ -6,32 +6,37 @@ using UnityEditor.UIElements;
 
 public class AuthorLogin : EditorWindow
 {
-    [MenuItem("Window/UIElements/AuthorLogin")]
+    VisualElement   _rootElement;
+    VisualTreeAsset _elementTree;
+    StyleSheet      _elementStyleSheet;
+
+
+    [MenuItem("License Spring/Publisher/Login")]
     public static void ShowExample()
     {
         AuthorLogin wnd = GetWindow<AuthorLogin>();
         wnd.titleContent = new GUIContent("AuthorLogin");
+        wnd.maxSize = new Vector2(350, 450);
     }
 
     public void OnEnable()
     {
         // Each editor window contains a root VisualElement object
-        VisualElement root = rootVisualElement;
-
-        // VisualElements objects can contain other VisualElement following a tree hierarchy.
-        VisualElement label = new Label("Hello World! From C#");
-        root.Add(label);
+        _rootElement = rootVisualElement;
 
         // Import UXML
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLogin.uxml");
-        VisualElement labelFromUXML = visualTree.CloneTree();
-        root.Add(labelFromUXML);
+        _elementTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLogin.uxml");
+        var uiTree = _elementTree.CloneTree();
+        _rootElement.Add(uiTree);
 
         // A stylesheet can be added to a VisualElement.
         // The style will be applied to the VisualElement and all of its children.
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLogin.uss");
-        VisualElement labelWithStyle = new Label("Hello World! With Style");
-        labelWithStyle.styleSheets.Add(styleSheet);
-        root.Add(labelWithStyle);
+        _elementStyleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLogin.uss");
+        _rootElement.styleSheets.Add(_elementStyleSheet);
+
+
+
     }
+
+
 }

@@ -1,4 +1,3 @@
-
 .HeaderImage {
 	margin-top:10px;
 	filter:saturate(4);
@@ -22,4 +21,19 @@ TextField {
 
 #trialPeriod {
 	font-size:16px;
+}
+
+Button#btnSubmit{
+	text-color:#fff;
+	-unity-background-image-tint-color: #2980b9;
+}
+
+Button#btnSubmitEmail {
+	text-color:#fff;
+	-unity-background-image-tint-color: #8e44ad;
+}
+
+Button#btnReset {
+	text-color:#fff;
+	-unity-background-image-tint-color: #2c3e50;
 }

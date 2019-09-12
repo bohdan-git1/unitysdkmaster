@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace LicenseSpring.Unity.Assets
+namespace LicenseSpring.Unity.Components
 {
     public interface ILicenseBehaviour 
     {

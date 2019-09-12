@@ -1,4 +1,5 @@
-﻿using LicenseSpring.Unity.Assets;
+﻿using LicenseSpring.Unity.Components;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,8 @@ namespace LicenseSpring.Unity.Plugins
         /// <summary>
         /// all of the used license behaviour in the scenes.
         /// </summary>
-        public List<ILicenseBehaviour> LicenseBehaviours;
+        public ILicenseBehaviour[] LicenseBehaviours;
+
         /// <summary>
         /// Local license manager.
         /// </summary>
@@ -34,8 +36,15 @@ namespace LicenseSpring.Unity.Plugins
                 ReInitLicenseManager();
 
             InitNotificationSystem();
+
+            SeekAllLicenseBehaviour();
         }
-        
+
+        private void SeekAllLicenseBehaviour()
+        {
+            LicenseBehaviours = GameObject.FindObjectsOfType<LicenseBehaviour>();
+        }
+
         public License CheckCurrentLicense()
         {
             return (License)AppLicenseManager?.CurrentLicense();

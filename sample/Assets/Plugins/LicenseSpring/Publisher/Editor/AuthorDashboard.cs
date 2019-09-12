@@ -4,13 +4,13 @@ using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 
 
-public class Dashboard : EditorWindow
+public class AuthorDashboard : EditorWindow
 {
-    [MenuItem("Window/UIElements/Dashboard")]
+    [MenuItem("Window/UIElements/AuthorDashboard")]
     public static void ShowExample()
     {
-        Dashboard wnd = GetWindow<Dashboard>();
-        wnd.titleContent = new GUIContent("Dashboard");
+        AuthorDashboard wnd = GetWindow<AuthorDashboard>();
+        wnd.titleContent = new GUIContent("AuthorDashboard");
     }
 
     public void OnEnable()
@@ -23,13 +23,13 @@ public class Dashboard : EditorWindow
         root.Add(label);
 
         // Import UXML
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Publisher/Editor/Dashboard.uxml");
+        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorDashboard.uxml");
         VisualElement labelFromUXML = visualTree.CloneTree();
         root.Add(labelFromUXML);
 
         // A stylesheet can be added to a VisualElement.
         // The style will be applied to the VisualElement and all of its children.
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Publisher/Editor/Dashboard.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorDashboard.uss");
         VisualElement labelWithStyle = new Label("Hello World! With Style");
         labelWithStyle.styleSheets.Add(styleSheet);
         root.Add(labelWithStyle);

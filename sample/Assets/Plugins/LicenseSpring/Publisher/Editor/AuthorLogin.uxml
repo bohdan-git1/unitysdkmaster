@@ -12,5 +12,17 @@ xsi:schemaLocation="
                         UnityEditor.PackageManager.UI ../../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
 "
 >
-    <engine:Label text="Hello World! From UXML" />
+  <engine:VisualElement class="main">
+    <engine:Box class="headerBox"></engine:Box>
+
+    <engine:VisualElement style="margin-top:10px;">
+      <engine:TextField name="txtUserName" text="User Name"></engine:TextField>
+      <engine:TextField name="txtPassword" text="Password" password="true" ></engine:TextField>
+    </engine:VisualElement>
+
+    <engine:Button name="btnSubmit" text="Submit"></engine:Button>
+    <engine:Button name="btnReset" text="Reset"></engine:Button>
+
+  </engine:VisualElement>
+
 </engine:UXML>
