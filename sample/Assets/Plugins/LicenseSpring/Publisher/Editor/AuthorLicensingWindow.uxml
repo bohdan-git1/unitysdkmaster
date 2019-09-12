@@ -13,6 +13,8 @@ xsi:schemaLocation="
 "
 >
 
+  <engine:VisualElement class="HeaderImage"></engine:VisualElement>
+
   <engine:Label name="lblHeader" text="License Spring Unity Generate Api file to be include in Published Assets"></engine:Label>
   <engine:TextField name="inputApiKey" text="Api Key"></engine:TextField>
   <engine:TextField name="inputApiSharedKey" text="Shared Key"></engine:TextField>

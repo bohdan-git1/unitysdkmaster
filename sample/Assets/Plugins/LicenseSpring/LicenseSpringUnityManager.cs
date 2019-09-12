@@ -1,6 +1,8 @@
 ﻿using LicenseSpring.Unity.Assets;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -23,53 +25,81 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         public LicenseManager AppLicenseManager { get; set; }
 
-        private License     _currentLicense;
+        private License                     _currentLicense;
+        private LicenseSpringNotification   _licenseSpringNotification;
 
         private void Awake()
         {
+            if (!Application.isEditor && AppLicenseManager == null)
+                ReInitLicenseManager();
+
             InitNotificationSystem();
         }
-
-        private IEnumerator Start()
+        
+        public License CheckCurrentLicense()
         {
-            while (true)
+            return (License)AppLicenseManager?.CurrentLicense();
+        }
+
+        public void ReInitLicenseManager()
+        {
+            AppLicenseManager =(LicenseManager)LicenseManager.GetInstance();
+
+            var licenseFilePath = Path.Combine(Application.persistentDataPath, "lic.bin");
+            LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
             {
-                Debug.Log("License Spring Unity Manager");
-                yield return null;
+                HardwareID = SystemInfo.deviceUniqueIdentifier,
+                EnableLogging = false,
+                CollectHostNameAndLocalIP = true,
+                LicenseFilePath = licenseFilePath
+            };
+
+            //HACK : if there is no baked credential read at files.
+            if (Helpers.LicenseFileHelper.CheckLocalConfiguration())
+            {
+                var licenseLocalKey = Helpers.LicenseFileHelper.ReadApiFileKey();
+
+                var licenseConfig = new LicenseSpringConfiguration(licenseLocalKey.ApiKey,
+                    licenseLocalKey.SharedKey,
+                    licenseLocalKey.ProductCode,
+                    licenseLocalKey.ApplicationName,
+                    licenseLocalKey.ApplicationVersion,
+                    licenseSpringExtendedOptions);
+
+                AppLicenseManager.Initialize(licenseConfig);
             }
+            else
+            {
+                Notify(null);
+            }
+            
         }
 
 
-        private void Notify(LicenseSpringNotification licenseSpringNotification,LicenseStatus licenseStatus)
+        public void Notify(License licenseData)
         {
-
-            if(licenseSpringNotification == null)
+            _licenseSpringNotification = GameObject.FindObjectOfType< LicenseSpringNotification>();
+            if(_licenseSpringNotification == null)
             {
-                licenseSpringNotification = Camera.main.gameObject.AddComponent<LicenseSpringNotification>();
+                _licenseSpringNotification = Camera.main.gameObject.AddComponent<LicenseSpringNotification>();
             }
 
-            licenseSpringNotification.AppLicenseStatus = licenseStatus;
+            if (licenseData == null)
+                _licenseSpringNotification.SetStatus( LicenseStatus.Unknown);
+            else
+                _licenseSpringNotification.SetStatus(licenseData.Status());
         }
 
         private void InitNotificationSystem()
         {
-            var notification = FindObjectOfType<LicenseSpringNotification>();
             if (AppLicenseManager != null && AppLicenseManager.IsInitialized())
             {
                 _currentLicense = (License)AppLicenseManager.CurrentLicense();
-                if (_currentLicense == null)
-                {
-                    Notify(notification, LicenseStatus.Unknown);
-                }
-                else
-                {
-
-                    Notify(notification, _currentLicense.Status());
-                }
+                Notify(_currentLicense);
             }
             else
             {
-                Notify(notification, LicenseStatus.Disabled);
+                Notify(null);
             }
         }
     }

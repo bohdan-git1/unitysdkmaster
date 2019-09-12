@@ -14,7 +14,9 @@ public class AuthorLicensingWindow : EditorWindow
     private TextField _txtProductVersion;
     private TextField _txtProductName;
 
-    [MenuItem("License Spring/Asset Author Licensing")]
+    private VisualElement  _headerImage;
+
+    [MenuItem("License Spring/Publisher/Author Licensing")]
     public static void Init()
     {
         AuthorLicensingWindow wnd = GetWindow<AuthorLicensingWindow>();
@@ -28,13 +30,13 @@ public class AuthorLicensingWindow : EditorWindow
         VisualElement root = rootVisualElement;
 
         // Import UXML
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Editor/AuthorLicensingWindow.uxml");
+        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLicensingWindow.uxml");
         VisualElement uiTree = visualTree.CloneTree();
         root.Add(uiTree);
 
         // A stylesheet can be added to a VisualElement.
         // The style will be applied to the VisualElement and all of its children.
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Editor/AuthorLicensingWindow.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLicensingWindow.uss");
 
         root.styleSheets.Add(styleSheet);
 
@@ -44,6 +46,14 @@ public class AuthorLicensingWindow : EditorWindow
         _txtProductCode = root.Q<TextField>("inputApiProductCode");
         _txtProductName = root.Q<TextField>("inputApiProductName");
         _txtProductVersion = root.Q<TextField>("inputApiAppVersion");
+
+        //header image
+        _headerImage = root.Q<VisualElement>(className: "HeaderImage");
+        _headerImage.style.unitySliceLeft = new StyleInt(StyleKeyword.Auto);
+        _headerImage.style.unitySliceRight = new StyleInt(StyleKeyword.Auto);
+        _headerImage.style.unitySliceTop = new StyleInt(StyleKeyword.Auto);
+        _headerImage.style.unitySliceBottom = new StyleInt(StyleKeyword.Auto);
+
 
         //querying buttons
         Button btnCreateFile = root.Q<Button>("btnGenerateFile");
@@ -65,11 +75,15 @@ public class AuthorLicensingWindow : EditorWindow
             SharedKey = _txtInputSharedKey.text
         };
 
-        LicenseFileHelper.WriteApiFileKey(localKey);
+        LicenseFileHelper.WriteApiFileKey(localKey, isDevMachine: true);
     }
 
+    /// <summary>
+    /// creating deployment key to be include on client files
+    /// </summary>
     private void OnBtnCreateFileClick()
     {
+        
         LicenseSpringLocalKey localKey = new LicenseSpringLocalKey
         {
             ApiKey = _txtInputKey.text,
@@ -80,6 +94,6 @@ public class AuthorLicensingWindow : EditorWindow
             SharedKey = _txtInputSharedKey.text
         };
 
-        LicenseFileHelper.WriteApiFileKey(localKey);
+        LicenseFileHelper.WriteApiFileKey(localKey, isDevMachine: false);
     }
 }

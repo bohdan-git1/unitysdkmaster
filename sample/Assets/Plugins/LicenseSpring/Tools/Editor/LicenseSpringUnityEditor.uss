@@ -1,0 +1,25 @@
+
+.HeaderImage {
+	margin-top:10px;
+	filter:saturate(4);
+	height:120px;
+	background-image: resource('UI/logo');
+}
+
+TextField {
+	margin-top:10px;
+	font-size:12px;
+}
+
+.space {
+	height:10px;
+}
+
+#trial{
+	background-color:#34495e;
+	text-color : #fff;
+}
+
+#trialPeriod {
+	font-size:16px;
+}

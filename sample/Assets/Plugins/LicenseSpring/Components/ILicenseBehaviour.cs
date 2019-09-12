@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LicenseSpring.Unity.Assets
 {
-    public interface ILicenseBehaviour
+    public interface ILicenseBehaviour 
     {
         bool AllowableFeature { get; }
         void CheckAllowableFeature();

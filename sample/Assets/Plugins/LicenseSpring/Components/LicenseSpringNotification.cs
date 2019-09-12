@@ -8,14 +8,22 @@ namespace LicenseSpring.Unity.Assets
     [ExecuteInEditMode]
     public class LicenseSpringNotification : MonoBehaviour
     {
-        public LicenseStatus AppLicenseStatus;
-
+        private LicenseStatus   _appLicenseStatus;
         private Texture         _splashTexture;
         private RenderTexture   _renderTexture;
 
+        public void SetStatus(LicenseStatus licenseStatus)
+        {
+            _appLicenseStatus = licenseStatus;
+            if(_appLicenseStatus == LicenseStatus.Active)
+            {
+                enabled = false;
+            }
+        }
+
         void Start()
         {
-            switch (AppLicenseStatus)
+            switch (_appLicenseStatus)
             {
                 case LicenseStatus.Unknown:
                     _splashTexture = Resources.Load<Texture>("UI/license_unlicensed");
@@ -39,15 +47,21 @@ namespace LicenseSpring.Unity.Assets
 
         private void OnPreRender()
         {
-            _renderTexture = RenderTexture.GetTemporary(256, 256, 16);
-            Camera.main.targetTexture = _renderTexture;
+            if (_appLicenseStatus != LicenseStatus.Active)
+            {
+                _renderTexture = RenderTexture.GetTemporary(256, 256, 16);
+                Camera.main.targetTexture = _renderTexture;
+            }
         }
 
         private void OnRenderImage(RenderTexture source, RenderTexture destination)
         {
-            Camera.main.targetTexture = null;
-            Graphics.Blit(_splashTexture, null as RenderTexture);
-            RenderTexture.ReleaseTemporary(_renderTexture);
+            if (_appLicenseStatus != LicenseStatus.Active)
+            {
+                Camera.main.targetTexture = null;
+                Graphics.Blit(_splashTexture, null as RenderTexture);
+                RenderTexture.ReleaseTemporary(_renderTexture); 
+            }
         }
     }
 }

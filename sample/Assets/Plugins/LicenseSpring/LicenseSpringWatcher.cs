@@ -16,10 +16,9 @@ namespace LicenseSpring.Unity.Plugins
     [InitializeOnLoad]
     public class LicenseSpringWatcher
     {
-        private static LicenseManager   _licenseManager;
-        private static LicenseSpringLocalKey         _licenseLokalKey;
-
-        private static LicenseSpringUnityManager _licenseSpringUnityManager;
+        private static LicenseManager               _licenseManager;
+        private static LicenseSpringLocalKey        _licenseLokalKey;
+        private static LicenseSpringUnityManager    _licenseSpringUnityManager;
 
         private const string WATCH_NAME = "License Manager Runner";
 
@@ -53,10 +52,7 @@ namespace LicenseSpring.Unity.Plugins
 
         private static void OnEditorUpdateCycle()
         {
-            //if (_licenseManager != null && _licenseManager.IsInitialized())
-            //{
-            //    QueryLicenseWatchdog();
-            //}
+            QueryLicenseWatchdog();
         }
 
         #endregion
@@ -68,8 +64,14 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         private static void QueryLicenseWatchdog()
         {
+            var licenseUnityManager = GameObject.FindObjectOfType<LicenseSpringUnityManager>();
             if (_licenseSpringUnityManager == null)
-                InitLicenseWatchdog();
+                _licenseSpringUnityManager = licenseUnityManager;
+
+            _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
+            //get execute solely on editor.
+            var license = _licenseSpringUnityManager.CheckCurrentLicense();
+            _licenseSpringUnityManager.Notify(license);
         }
 
         /// <summary>

@@ -12,18 +12,24 @@ xsi:schemaLocation="
                         UnityEditor.PackageManager.UI ../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
 "
 >
-
+  <engine:VisualElement class="HeaderImage"></engine:VisualElement>
   <engine:VisualElement>
     <engine:TextField name="txtEmail" text="Send your email to request demo key"></engine:TextField>
+    <engine:Button name="btnSubmitEmail" text="Request Demo" focusable="true"/>
   </engine:VisualElement>
 
 
   <engine:VisualElement>
     <engine:TextField name="txtKey" text="Key from publisher"></engine:TextField>
+    <engine:Button name="btnSubmit" text="Submit"/>
   </engine:VisualElement>
 
-  <engine:VisualElement>
-    <engine:Button name="btnSubmit" text="Submit"/>
+  <engine:VisualElement class="space">
+  </engine:VisualElement>
+
+  <engine:VisualElement name="trial">
+    <engine:Label  text="Trial Days Remaining"/>
+    <engine:Label name="trialPeriod" text=""/>
   </engine:VisualElement>
 
 </engine:UXML>
