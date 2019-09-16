@@ -13,7 +13,7 @@ namespace LicenseSpring.Unity.Helpers
     /// <summary>
     /// Baked Identity Hack!..
     /// </summary>
-    public class LicenseFileHelper
+    public class LicenseApiConfigurationHelper
     {
         public static bool CheckLocalConfiguration(bool isDevMachine = true)
         {

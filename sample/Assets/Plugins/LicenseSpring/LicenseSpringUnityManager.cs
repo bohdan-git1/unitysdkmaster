@@ -17,6 +17,21 @@ namespace LicenseSpring.Unity.Plugins
         ExecuteAlways]
     public class LicenseSpringUnityManager : MonoBehaviour
     {
+        private static LicenseSpringUnityManager INSTANCE;
+
+        public static LicenseSpringUnityManager Instance
+        {
+            get
+            {
+                //this made sense only in game, in editor mode this instance is maintained by license watcher.
+                if (INSTANCE == null)
+                    INSTANCE = new GameObject(LicenseSpringWatcher.WATCH_NAME)
+                        .AddComponent< LicenseSpringUnityManager>();
+
+                return INSTANCE;
+            }
+        }
+
         /// <summary>
         /// all of the used license behaviour in the scenes.
         /// </summary>
@@ -25,36 +40,73 @@ namespace LicenseSpring.Unity.Plugins
         /// <summary>
         /// Local license manager.
         /// </summary>
-        public LicenseManager AppLicenseManager { get; set; }
+        public LicenseManager AppLicenseManager { get; private set; }
 
         private License                     _currentLicense;
         private LicenseSpringNotification   _licenseSpringNotification;
 
+        private LicenseSpringNotification InitNotificationSystem()
+        {
+            //establish notification system for license manager
+            var licenseSpringNotification = GameObject.FindObjectOfType<LicenseSpringNotification>();
+            if (licenseSpringNotification == null)
+                licenseSpringNotification = Camera.main.gameObject.AddComponent<LicenseSpringNotification>();
+
+            //set initial status
+            licenseSpringNotification.SetStatus(LicenseStatus.Unknown);
+            return licenseSpringNotification;
+        }
+
         private void Awake()
         {
             if (!Application.isEditor && AppLicenseManager == null)
-                ReInitLicenseManager();
+                InitLicenseManager();
 
-            InitNotificationSystem();
+            _licenseSpringNotification = InitNotificationSystem();
+
+            InitLicenseManager();
 
             SeekAllLicenseBehaviour();
+
+            if (Application.isPlaying)
+                DontDestroyOnLoad(this);
+
+            if (INSTANCE == null)
+                INSTANCE = this;
         }
 
+        private void Start()
+        {
+            var currentInstalledLicense = CheckCurrentLicense();
+            Notify(currentInstalledLicense);
+        }
+
+        /// <summary>
+        /// get all deployed license behaviour.
+        /// </summary>
         private void SeekAllLicenseBehaviour()
         {
             LicenseBehaviours = GameObject.FindObjectsOfType<LicenseBehaviour>();
         }
 
+        /// <summary>
+        /// Routine of checking current installed license.
+        /// </summary>
+        /// <returns></returns>
         public License CheckCurrentLicense()
         {
             return (License)AppLicenseManager?.CurrentLicense();
         }
 
-        public void ReInitLicenseManager()
+        /// <summary>
+        /// initialize license manager, reading deployed license or register a new one, 
+        /// it show trial period and expiration date
+        /// </summary>
+        public void InitLicenseManager()
         {
             AppLicenseManager =(LicenseManager)LicenseManager.GetInstance();
 
-            var licenseFilePath = Path.Combine(Application.persistentDataPath, "lic.bin");
+            var licenseFilePath = Path.Combine(Application.persistentDataPath, "License","license.bin");
             LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
             {
                 HardwareID = SystemInfo.deviceUniqueIdentifier,
@@ -64,9 +116,9 @@ namespace LicenseSpring.Unity.Plugins
             };
 
             //HACK : if there is no baked credential read at files.
-            if (Helpers.LicenseFileHelper.CheckLocalConfiguration())
+            if (Helpers.LicenseApiConfigurationHelper.CheckLocalConfiguration())
             {
-                var licenseLocalKey = Helpers.LicenseFileHelper.ReadApiFileKey();
+                var licenseLocalKey = Helpers.LicenseApiConfigurationHelper.ReadApiFileKey();
 
                 var licenseConfig = new LicenseSpringConfiguration(licenseLocalKey.ApiKey,
                     licenseLocalKey.SharedKey,
@@ -80,6 +132,12 @@ namespace LicenseSpring.Unity.Plugins
             else
             {
                 Notify(null);
+                if(!Application.isPlaying)
+                    throw new UnityEngine.UnityException("No Api Configuration detected, Contact your asset Developer");
+                else
+                {
+                    throw new UnityEngine.UnityException("UnAuthorized License Manager detected");
+                }
             }
             
         }
@@ -99,17 +157,5 @@ namespace LicenseSpring.Unity.Plugins
                 _licenseSpringNotification.SetStatus(licenseData.Status());
         }
 
-        private void InitNotificationSystem()
-        {
-            if (AppLicenseManager != null && AppLicenseManager.IsInitialized())
-            {
-                _currentLicense = (License)AppLicenseManager.CurrentLicense();
-                Notify(_currentLicense);
-            }
-            else
-            {
-                Notify(null);
-            }
-        }
     }
 }

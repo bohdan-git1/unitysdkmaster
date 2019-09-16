@@ -75,7 +75,7 @@ public class AuthorLicensingWindow : EditorWindow
             SharedKey = _txtInputSharedKey.text
         };
 
-        LicenseFileHelper.WriteApiFileKey(localKey, isDevMachine: true);
+        LicenseApiConfigurationHelper.WriteApiFileKey(localKey, isDevMachine: true);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class AuthorLicensingWindow : EditorWindow
             SharedKey = _txtInputSharedKey.text
         };
 
-        LicenseFileHelper.WriteApiFileKey(localKey, isDevMachine: false);
+        LicenseApiConfigurationHelper.WriteApiFileKey(localKey, isDevMachine: false);
     }
 
     private void OnValidate()
