@@ -14,7 +14,7 @@ public class LicenseSpringUnityEditor : Editor
     //control and input control
     TextField   _txtEmail;
     TextField   _txtKeyCode;
-    Label       _trialLabel;
+    Label       _trialLabel, _trialPeriod;
 
     Button      _btnSubmit;
     Button      _btnRequestDemo;
@@ -37,6 +37,14 @@ public class LicenseSpringUnityEditor : Editor
         _target = (LicenseSpringUnityManager)target;
     }
 
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+
+        if (_txtEmail.HasMouseCapture())
+            Debug.Log("Mouse clicked");
+    }
+
     public override VisualElement CreateInspectorGUI()
     {
         var root =_rootElement;
@@ -53,10 +61,10 @@ public class LicenseSpringUnityEditor : Editor
         
         _txtEmail = root.Query<TextField>("txtEmail");
         _txtKeyCode = root.Query<TextField>("txtKey");
-        _trialLabel = root.Query<Label>("trialPeriod");
+        _trialLabel = root.Query<Label>("trialLabel");
+        _trialPeriod = root.Query<Label>("trialPeriod");
 
-        var trialContainer = root.Query<VisualElement>("trial");
-        trialContainer.NotVisible();
+        _trialPeriod.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
         _trialLabel.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
 
         //events registration
@@ -64,14 +72,24 @@ public class LicenseSpringUnityEditor : Editor
         _btnRequestDemo.clickable.clicked += OnBtnRequestDemo;
         _btnReset.clickable.clicked += OnBtnReset;
 
+        //textfield events;
+
         var license = _target.CheckCurrentLicense();
-        if(license.IsTrial())
+        if(license == null)
         {
-            trialContainer.Visible();
+            _trialLabel.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+            _trialLabel.text = "License file not found, contact author/publisher";
+        }
+
+        if (license != null && license.IsTrial())
+        {
 
             var remainingDays = license.DaysRemaining();
             _trialLabel.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-            _trialLabel.text = remainingDays.ToString();
+            _trialPeriod.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+
+            _trialLabel.text = "Trial Remaining Days :";
+            _trialPeriod.text = remainingDays.ToString();
         }
 
         return root;

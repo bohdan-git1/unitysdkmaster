@@ -17,7 +17,7 @@ public class AuthorLicensingWindow : EditorWindow
     private VisualElement           _headerImage;
     private LicenseSpringLocalKey   _LocalKey;
 
-    [MenuItem("License Spring/Publisher/Author Licensing")]
+    [MenuItem("License Spring/Publisher/Author Api")]
     public static void Init()
     {
         AuthorLicensingWindow wnd = GetWindow<AuthorLicensingWindow>();

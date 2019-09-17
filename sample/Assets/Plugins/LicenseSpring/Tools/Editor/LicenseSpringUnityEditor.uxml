@@ -32,7 +32,7 @@ xsi:schemaLocation="
   </engine:VisualElement>
 
   <engine:VisualElement name="trial">
-    <engine:Label  text="Trial Days Remaining"/>
+    <engine:Label name="trialLabel" text="Trial Days Remaining"/>
     <engine:Label name="trialPeriod" text=""/>
   </engine:VisualElement>
 

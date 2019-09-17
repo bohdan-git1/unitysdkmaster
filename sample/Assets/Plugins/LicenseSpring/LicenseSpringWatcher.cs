@@ -20,16 +20,17 @@ namespace LicenseSpring.Unity.Plugins
     {
         private static LicenseSpringUnityManager    _licenseSpringUnityManager;
 
-        public const string WATCH_NAME = "License Manager Runner";
+        public const string WATCH_NAME = "License Spring Manager";
 
         static LicenseSpringWatcher()
         {
+            //register editor application events.
             EditorApplication.update += OnEditorUpdateCycle;
             EditorApplication.projectChanged += OnProjectCompositionChanged;
             EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
 
             Debug.Log("Watcher log init");
-
+            
             RunLicenseWatchdog();
         }
 
@@ -49,7 +50,10 @@ namespace LicenseSpring.Unity.Plugins
 
         private static void OnEditorUpdateCycle()
         {
-            //RunLicenseWatchdog();
+            if(Time.realtimeSinceStartup % 30 == 0)
+            {
+                RunLicenseWatchdog();
+            }
         }
 
         #endregion
@@ -68,6 +72,8 @@ namespace LicenseSpring.Unity.Plugins
             if (_licenseSpringUnityManager == null)
                 _licenseSpringUnityManager = new GameObject(WATCH_NAME).AddComponent<LicenseSpringUnityManager>();
 
+            var license= _licenseSpringUnityManager.CheckCurrentLicense();
+            _licenseSpringUnityManager.Notify(license);
         }
         
         #endregion

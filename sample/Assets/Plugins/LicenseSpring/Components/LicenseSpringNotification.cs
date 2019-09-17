@@ -15,13 +15,28 @@ namespace LicenseSpring.Unity.Components
         public void SetStatus(LicenseStatus licenseStatus)
         {
             _appLicenseStatus = licenseStatus;
-            if(_appLicenseStatus == LicenseStatus.Active)
+
+            if (_appLicenseStatus == LicenseStatus.Active)
             {
                 enabled = false;
+            }
+            else
+            {
+                enabled = true;
+            }
+
+            if (Application.isEditor)
+            {
+                AssignRenderTexture();
             }
         }
 
         void Start()
+        {
+            AssignRenderTexture();
+        }
+
+        private void AssignRenderTexture()
         {
             switch (_appLicenseStatus)
             {
