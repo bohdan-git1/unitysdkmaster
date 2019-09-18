@@ -2,24 +2,6 @@
   "version": 3,
   "targets": {
     ".NETStandard,Version=v2.0": {
-      "Baseclass.Contrib.Nuget.Output/2.4.3": {
-        "type": "package",
-        "build": {
-          "build/Baseclass.Contrib.Nuget.Output.targets": {}
-        }
-      },
-      "libsodium-net/0.10.0": {
-        "type": "package",
-        "dependencies": {
-          "Baseclass.Contrib.Nuget.Output": "2.1.0"
-        },
-        "compile": {
-          "lib/Net40/Sodium.dll": {}
-        },
-        "runtime": {
-          "lib/Net40/Sodium.dll": {}
-        }
-      },
       "Microsoft.NETCore.Platforms/1.1.0": {
         "type": "package",
         "compile": {
@@ -56,34 +38,6 @@
     }
   },
   "libraries": {
-    "Baseclass.Contrib.Nuget.Output/2.4.3": {
-      "sha512": "7U4hVBXUDryAIKTuZdJcWVweOFmlNwewUVY+9WuRrysY0xVGPk+AGSDiR39BtzDNK3+FeLXhPYpfBiZYd0itfQ==",
-      "type": "package",
-      "path": "baseclass.contrib.nuget.output/2.4.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "baseclass.contrib.nuget.output.2.4.3.nupkg.sha512",
-        "baseclass.contrib.nuget.output.nuspec",
-        "build/Baseclass.Contrib.Nuget.Output.Build.dll",
-        "build/Baseclass.Contrib.Nuget.Output.targets"
-      ]
-    },
-    "libsodium-net/0.10.0": {
-      "sha512": "m+gyjWTh8NN79lwfI6X6mxhQPhH2z6dsnfOk/w6bK0rWCuGL9RmC3K3adWCD4F+vJGbpq46TcRa+wGvPnrLTyQ==",
-      "type": "package",
-      "path": "libsodium-net/0.10.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/Net40/Sodium.dll",
-        "libsodium-net.0.10.0.nupkg.sha512",
-        "libsodium-net.nuspec",
-        "output/libsodium-64.dll",
-        "output/libsodium.dll",
-        "output/sodium.dll.config"
-      ]
-    },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "sha512": "s50KXgh6ROERYYY6KXFdXoHbhEEPndwgPCyDFE978y1FOdD/aYmLaxtABLIABN4HHuCq8Xfn9psumCsMcIhvUA==",
       "type": "package",
@@ -260,10 +214,8 @@
   },
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v2.0": [
-      "Baseclass.Contrib.Nuget.Output >= 2.4.3",
       "NETStandard.Library >= 2.0.3",
-      "Newtonsoft.Json >= 12.0.2",
-      "libsodium-net >= 0.10.0"
+      "Newtonsoft.Json >= 12.0.2"
     ]
   },
   "packageFolders": {
@@ -310,10 +262,6 @@
     "frameworks": {
       "netstandard2.0": {
         "dependencies": {
-          "Baseclass.Contrib.Nuget.Output": {
-            "target": "Package",
-            "version": "[2.4.3, )"
-          },
           "NETStandard.Library": {
             "suppressParent": "All",
             "target": "Package",
@@ -323,10 +271,6 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[12.0.2, )"
-          },
-          "libsodium-net": {
-            "target": "Package",
-            "version": "[0.10.0, )"
           }
         },
         "imports": [
@@ -336,17 +280,5 @@
         "warn": true
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'libsodium-net 0.10.0' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETStandard,Version=v2.0'. This package may not be fully compatible with your project.",
-      "libraryId": "libsodium-net",
-      "targetGraphs": [
-        ".NETStandard,Version=v2.0"
-      ]
-    }
-  ]
+  }
 }

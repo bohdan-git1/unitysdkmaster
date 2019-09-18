@@ -5,9 +5,8 @@ using System.Text;
 namespace LicenseSpring.Unity.Plugins
 {
     [Serializable]
-    public class LicenseSpringLocalKey
-    {
-        public bool IsDevelopment { get; set; }
+    public class LocalKey
+    { 
         public string ApiKey { get; set; }
         public string SharedKey { get; set; }
         public string ProductCode { get; set; }
