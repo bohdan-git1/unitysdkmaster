@@ -27,7 +27,7 @@ namespace LicenseSpring.Unity.Plugins
             {
                 //this made sense only in game, in editor mode this instance is maintained by license watcher.
                 if (INSTANCE == null)
-                    INSTANCE = new GameObject(LicenseSpringAssets.WATCH_NAME)
+                    INSTANCE = new GameObject("License Spring Unity Plugins")
                         .AddComponent< LicenseSpringUnityManager>();
 
                 return INSTANCE;

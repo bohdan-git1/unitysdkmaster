@@ -21,12 +21,14 @@ namespace LicenseSpring.Unity.Plugins
     [InitializeOnLoad]
     public class LicenseSpringAssets
     {
-        private static string Uid;
+        private static string _Uid;
+
+        private static LicenseManager _licenseManager;
 
         static LicenseSpringAssets()
         {
             //this is for asset differentiation.
-            Uid = GUID.Generate().ToString();
+            _Uid = GUID.Generate().ToString();
 
             //register editor application events.
             EditorApplication.update += OnEditorUpdateCycle;
@@ -34,6 +36,46 @@ namespace LicenseSpring.Unity.Plugins
             EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
 
             //initialize license spring manager.
+            InitLicenseManager();
+        }
+
+        public static void InitLicenseManager()
+        {
+            _licenseManager = (LicenseManager)LicenseManager.GetInstance();
+
+            var licenseFilePath = Path.Combine(Application.dataPath, "License", "license.bin");
+            LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
+            {
+                HardwareID = SystemInfo.deviceUniqueIdentifier,
+                EnableLogging = false,
+                CollectHostNameAndLocalIP = true,
+                LicenseFilePath = licenseFilePath
+            };
+
+            //HACK : if there is no baked credential read at files.
+            if (Helpers.LicenseApiConfigurationHelper.CheckLocalConfiguration())
+            {
+                var licenseLocalKey = Helpers.LicenseApiConfigurationHelper.ReadApiFileKey();
+
+                var licenseConfig = new LicenseSpringConfiguration(licenseLocalKey.ApiKey,
+                    licenseLocalKey.SharedKey,
+                    licenseLocalKey.ProductCode,
+                    licenseLocalKey.ApplicationName,
+                    licenseLocalKey.ApplicationVersion,
+                    licenseSpringExtendedOptions);
+
+                _licenseManager.Initialize(licenseConfig);
+            }
+            else
+            {
+                if (Application.isEditor)
+                    throw new UnityEngine.UnityException("No Api Configuration detected, Contact your asset Developer");
+                else
+                {
+                    throw new UnityEngine.UnityException("UnAuthorized License Manager detected");
+                }
+            }
+
         }
 
 
