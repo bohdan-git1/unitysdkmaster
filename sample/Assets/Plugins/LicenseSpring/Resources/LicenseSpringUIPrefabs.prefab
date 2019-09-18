@@ -96,7 +96,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8294615735209349295
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1229,7 +1229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6953693173289307315
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1314,7 +1314,7 @@ GameObject:
   - component: {fileID: 6953693173611016991}
   - component: {fileID: 6953693173611016990}
   m_Layer: 0
-  m_Name: LicenseSpringUI
+  m_Name: LicenseSpringUIPrefabs
   m_TagString: LicenseSpring
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

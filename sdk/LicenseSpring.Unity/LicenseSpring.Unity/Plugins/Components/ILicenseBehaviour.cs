@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LicenseSpring.Unity.Assets
+namespace LicenseSpring.Unity.Plugins.Components
 {
     public interface ILicenseBehaviour
     {

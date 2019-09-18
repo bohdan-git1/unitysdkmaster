@@ -104,8 +104,7 @@ public class LicenseSpringUnityEditor : Editor
     {
         var email = _txtEmail.text;
         var trialKey = _target.AppLicenseManager.GetTrialKey(email);
-        var licenseKey = _target.AppLicenseManager.ActivateLicense(trialKey);
-        
+        _target.AppLicenseManager.ActivateLicense(trialKey);
     }
 
     private void OnSubmitClick()

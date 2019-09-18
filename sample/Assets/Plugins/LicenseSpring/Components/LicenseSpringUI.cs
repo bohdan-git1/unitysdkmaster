@@ -81,14 +81,17 @@ public class LicenseSpringUI : MonoBehaviour
         if(!string.IsNullOrEmpty( Email.text))
         {
             string trialKey = LicenseSpringUnityManager.Instance.AppLicenseManager.GetTrialKey(email: Email.text);
-            LicenseSpringUnityManager.Instance.AppLicenseManager.ActivateLicense(trialKey);
-
+            _currentLicense = (License) LicenseSpringUnityManager.Instance.AppLicenseManager.ActivateLicense(trialKey);
         }
 
         if(string.IsNullOrEmpty(Key.text))
         {
-            LicenseSpringUnityManager.Instance.AppLicenseManager.ActivateLicense(Key.text);
+            _currentLicense =(License) LicenseSpringUnityManager.Instance.AppLicenseManager.ActivateLicense(Key.text);
         }
+
+        var installationFile = _currentLicense.Check();
+        if(installationFile != null)
+            Application.Quit();
 
     }
 }

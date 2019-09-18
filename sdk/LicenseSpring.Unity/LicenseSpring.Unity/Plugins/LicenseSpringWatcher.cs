@@ -1,50 +1,54 @@
 ﻿
 using UnityEngine;
 using UnityEditor;
-using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+
 
 namespace LicenseSpring.Unity.Plugins
 {
 
     /// <summary>
     /// LicenseSpringWatcher, intended to be only as editor script and only used as editor script.
+    /// change note : made this utils to only responsible to maintenance license spring unity manager game object, 
+    /// all license initialization moved to LicenseSpringUnityManager
     /// </summary>
     [InitializeOnLoad]
     public class LicenseSpringWatcher
     {
-        private static LicenseManager               _licenseManager;
-        private static LocalKey                     _licenseLokalKey;
+        private static LicenseSpringUnityManager _licenseSpringUnityManager;
 
-        private static LicenseSpringUnityManager    _licenseSpringUnityManager;
-
-        private const string WATCH_NAME = "License Manager Runner";
+        public const string WATCH_NAME = "License Spring Manager";
 
         static LicenseSpringWatcher()
         {
-            EditorApplication.update            += OnEditorUpdateCycle;
-            EditorApplication.hierarchyChanged  += OnEditorHierarchyChanged;
+            //register editor application events.
+            EditorApplication.update += OnEditorUpdateCycle;
+            EditorApplication.projectChanged += OnProjectCompositionChanged;
+            EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
 
-            _licenseLokalKey = CheckLocalFileSettings();
-            InitLicenseManager();
-            InitLicenseWatchdog();
+            Debug.Log("Watcher log init");
+
+            RunLicenseWatchdog();
         }
 
 
         #region EditorEvents
 
+        private static void OnProjectCompositionChanged()
+        {
+            RunLicenseWatchdog();
+        }
+
         private static void OnEditorHierarchyChanged()
         {
-            QueryLicenseWatchdog();
+            RunLicenseWatchdog();
         }
 
 
         private static void OnEditorUpdateCycle()
         {
-            if (_licenseManager.IsInitialized())
+            if (Time.realtimeSinceStartup % 30 == 0)
             {
-                QueryLicenseWatchdog();
+                RunLicenseWatchdog();
             }
         }
 
@@ -53,95 +57,19 @@ namespace LicenseSpring.Unity.Plugins
         #region Internal Methods
 
 
-        private static void QueryLicenseWatchdog()
+        /// <summary>
+        /// Seek or Creating license watcher game object when not found
+        /// </summary>
+        private static void RunLicenseWatchdog()
         {
+            //Debug.Log("Running License Watchdog");
+
+            _licenseSpringUnityManager = GameObject.FindObjectOfType<LicenseSpringUnityManager>();
             if (_licenseSpringUnityManager == null)
-                InitLicenseWatchdog();
-        }
+                _licenseSpringUnityManager = new GameObject(WATCH_NAME).AddComponent<LicenseSpringUnityManager>();
 
-        /// <summary>
-        /// Creating license watcher game object
-        /// </summary>
-        private static void InitLicenseWatchdog()
-        {
-            _licenseSpringUnityManager = new GameObject(WATCH_NAME)
-                .AddComponent<LicenseSpringUnityManager>();
-
-            _licenseSpringUnityManager.AppLicenseManager = _licenseManager;
-        }
-
-        /// <summary>
-        /// CheckLocalFileSettings, check local file cache for settings and load it to license manager
-        /// </summary>
-        private static LocalKey CheckLocalFileSettings()
-        {
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "lic");
-
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-            //looking for file with skey extension
-            var keys = Directory.GetFiles(folderPath, "*.skey");
-            if(keys?.Length > 0)
-            {
-                var filePath = keys[0];
-                return ReadApiFileKey(filePath);
-            }
-            else
-            {
-                if (EditorApplication.isPlaying)
-                    EditorApplication.ExitPlaymode();
-
-                throw new UnityEngine.UnityException("Deployment Configuration not exist, contact publisher of this assets");
-            }
-        }
-
-        /// <summary>
-        /// Initialize license manager
-        /// </summary>
-        private static void InitLicenseManager()
-        {
-            var licenseFilePath = Path.Combine(Application.persistentDataPath, "lic.bin");
-            LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
-            {
-                HardwareID = SystemInfo.deviceUniqueIdentifier,
-                EnableLogging = false,
-                CollectHostNameAndLocalIP = true,
-                LicenseFilePath = licenseFilePath
-            };
-
-            var licenseConfig = new LicenseSpringConfiguration(_licenseLokalKey.ApiKey,
-                _licenseLokalKey.SharedKey,
-                _licenseLokalKey.ProductCode,
-                _licenseLokalKey.ApplicationName,
-                _licenseLokalKey.ApplicationVersion, 
-                licenseSpringExtendedOptions);
-
-            _licenseManager = (LicenseManager)LicenseManager.GetInstance();
-            _licenseManager.Initialize(licenseConfig);
-            
-        }
-
-        public static LocalKey ReadApiFileKey(string licenseApiKeyPath)
-        {
-            File.Decrypt(licenseApiKeyPath);
-
-            using (FileStream fs = new FileStream(licenseApiKeyPath, FileMode.Open))
-            {
-                var bf = new BinaryFormatter();
-
-                return (LocalKey)bf.Deserialize(fs);
-            }
-        }
-
-        public static void WriteApiFileKey(LocalKey localKey, string saveFilePath)
-        {
-            using (FileStream fs = new FileStream(saveFilePath, FileMode.OpenOrCreate))
-            {
-                var bf = new BinaryFormatter();
-                bf.Serialize(fs, localKey);
-            }
-
-            File.Encrypt(saveFilePath);
+            var license = _licenseSpringUnityManager.CheckCurrentLicense();
+            _licenseSpringUnityManager.Notify(license);
         }
 
         #endregion

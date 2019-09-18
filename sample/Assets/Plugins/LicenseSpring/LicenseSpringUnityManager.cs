@@ -61,7 +61,6 @@ namespace LicenseSpring.Unity.Plugins
                 _licenseSpringNotification = Camera.main.gameObject.AddComponent<LicenseSpringNotification>();
 
             //set initial status
-            _licenseSpringNotification.SetStatus(LicenseStatus.Unknown);
             InitNotificationComplete = true;
         }
 
@@ -74,12 +73,6 @@ namespace LicenseSpring.Unity.Plugins
                 var data = Resources.Load("LicenseSpringUIPrefabs", typeof(GameObject));
                 var instance = (GameObject)Instantiate(data);
                 _licenseSpringInGameUi = instance.GetComponent<LicenseSpringUI>();
-            }
-
-            //init license spring
-            if (Application.isEditor)
-            {
-
             }
 
             InitInGameUIComplete = true;
@@ -189,26 +182,32 @@ namespace LicenseSpring.Unity.Plugins
         {
             if(Application.isEditor)
             {
-                if(Application.isPlaying)
+                if (Application.isPlaying)
                 {
+                    if(!InitInGameUIComplete)
+                    {
+                        InGameNotificationSystem();
+                    }
+
                     _licenseSpringInGameUi.SetStatus(licenseData);
                 }
                 else
                 {
-                    _licenseSpringNotification = GameObject.FindObjectOfType<LicenseSpringNotification>();
-                    if (_licenseSpringNotification == null)
+                    if(!InitNotificationComplete)
                     {
-                        _licenseSpringNotification = Camera.main.gameObject.AddComponent<LicenseSpringNotification>();
+                        InitNotificationSystem();
                     }
 
-                    if (licenseData == null)
-                        _licenseSpringNotification.SetStatus(LicenseStatus.Unknown);
-                    else
-                        _licenseSpringNotification.SetStatus(licenseData.Status());
-                }   
+                    _licenseSpringNotification.SetStatus(licenseData);
+                }
             }
             else
             {
+                if (!InitInGameUIComplete || GameObject.FindObjectOfType<LicenseSpringUI>() == null)
+                {
+                    InGameNotificationSystem();
+                }
+
                 _licenseSpringInGameUi.SetStatus(licenseData);
             }
         }

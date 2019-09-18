@@ -1,20 +1,17 @@
-﻿
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace LicenseSpring.Unity.Components
+namespace LicenseSpring.Unity.Plugins.Components
 {
     [ExecuteInEditMode]
     public class LicenseSpringNotification : MonoBehaviour
     {
-        private License         _appLicense;
-        private Texture         _splashTexture;
-        private RenderTexture   _renderTexture;
+        private License _appLicense;
+        private Texture _splashTexture;
+        private RenderTexture _renderTexture;
 
         public void SetStatus(License licenseData)
         {
-            if(licenseData == null)
+            if (licenseData == null)
             {
                 enabled = true;
 
@@ -94,9 +91,8 @@ namespace LicenseSpring.Unity.Components
             {
                 Camera.main.targetTexture = null;
                 Graphics.Blit(_splashTexture, null as RenderTexture);
-                RenderTexture.ReleaseTemporary(_renderTexture); 
+                RenderTexture.ReleaseTemporary(_renderTexture);
             }
         }
     }
 }
-

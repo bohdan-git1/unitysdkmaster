@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETStandard,Version=v2.0/",
-    "signature": "cfe1dc2a80602aef150a12815387068463a61a0d"
+    "signature": "01114a74d1440e8da92c92690c1dbe2aa685d328"
   },
   "compilationOptions": {},
   "targets": {
@@ -9,19 +9,43 @@
     ".NETStandard,Version=v2.0/": {
       "LicenseSpring.Unity/1.0.0": {
         "dependencies": {
+          "Baseclass.Contrib.Nuget.Output": "2.4.3",
           "NETStandard.Library": "2.0.3",
+          "Newtonsoft.Json": "12.0.2",
+          "libsodium-net": "0.10.0",
           "LicenseSpring": "4.4.7.0",
           "UnityEditor": "0.0.0.0",
-          "UnityEngine": "0.0.0.0"
+          "UnityEngine": "0.0.0.0",
+          "UnityEngine.UI": "1.0.0.0"
         },
         "runtime": {
           "LicenseSpring.Unity.dll": {}
+        }
+      },
+      "Baseclass.Contrib.Nuget.Output/2.4.3": {},
+      "libsodium-net/0.10.0": {
+        "dependencies": {
+          "Baseclass.Contrib.Nuget.Output": "2.4.3"
+        },
+        "runtime": {
+          "lib/Net40/Sodium.dll": {
+            "assemblyVersion": "0.10.0.0",
+            "fileVersion": "0.10.0.0"
+          }
         }
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
       "NETStandard.Library/2.0.3": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      },
+      "Newtonsoft.Json/12.0.2": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.2.23222"
+          }
         }
       },
       "LicenseSpring/4.4.7.0": {
@@ -45,6 +69,14 @@
           "UnityEngine.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "UnityEngine.UI/1.0.0.0": {
+        "runtime": {
+          "UnityEngine.UI.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -104,6 +136,20 @@
       "serviceable": false,
       "sha512": ""
     },
+    "Baseclass.Contrib.Nuget.Output/2.4.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7U4hVBXUDryAIKTuZdJcWVweOFmlNwewUVY+9WuRrysY0xVGPk+AGSDiR39BtzDNK3+FeLXhPYpfBiZYd0itfQ==",
+      "path": "baseclass.contrib.nuget.output/2.4.3",
+      "hashPath": "baseclass.contrib.nuget.output.2.4.3.nupkg.sha512"
+    },
+    "libsodium-net/0.10.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-m+gyjWTh8NN79lwfI6X6mxhQPhH2z6dsnfOk/w6bK0rWCuGL9RmC3K3adWCD4F+vJGbpq46TcRa+wGvPnrLTyQ==",
+      "path": "libsodium-net/0.10.0",
+      "hashPath": "libsodium-net.0.10.0.nupkg.sha512"
+    },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",
       "serviceable": true,
@@ -118,6 +164,13 @@
       "path": "netstandard.library/2.0.3",
       "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
     },
+    "Newtonsoft.Json/12.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rTK0s2EKlfHsQsH6Yx2smvcTCeyoDNgCW7FEYyV01drPlh2T243PR2DiDXqtC5N4GDm4Ma/lkxfW5a/4793vbA==",
+      "path": "newtonsoft.json/12.0.2",
+      "hashPath": "newtonsoft.json.12.0.2.nupkg.sha512"
+    },
     "LicenseSpring/4.4.7.0": {
       "type": "reference",
       "serviceable": false,
@@ -129,6 +182,11 @@
       "sha512": ""
     },
     "UnityEngine/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "UnityEngine.UI/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
