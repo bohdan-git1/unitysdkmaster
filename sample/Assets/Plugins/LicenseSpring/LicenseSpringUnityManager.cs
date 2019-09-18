@@ -27,7 +27,7 @@ namespace LicenseSpring.Unity.Plugins
             {
                 //this made sense only in game, in editor mode this instance is maintained by license watcher.
                 if (INSTANCE == null)
-                    INSTANCE = new GameObject(LicenseSpringWatcher.WATCH_NAME)
+                    INSTANCE = new GameObject(LicenseSpringAssets.WATCH_NAME)
                         .AddComponent< LicenseSpringUnityManager>();
 
                 return INSTANCE;
@@ -95,6 +95,7 @@ namespace LicenseSpring.Unity.Plugins
 
             if (INSTANCE == null)
                 INSTANCE = this;
+
         }
 
         private IEnumerable Start()

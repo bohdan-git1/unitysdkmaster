@@ -11,27 +11,29 @@ namespace LicenseSpring.Unity.Plugins
 {
 
     /// <summary>
-    /// LicenseSpringWatcher, intended to be only as editor script and only used as editor script.
-    /// change note : made this utils to only responsible to maintenance license spring unity manager game object, 
-    /// all license initialization moved to LicenseSpringUnityManager
+    /// LicenseSpringWatcher, intended to be only as editor script.
+    /// change note :   made this utils to only responsible to maintenance license spring unity manager game object, 
+    ///                 all license initialization moved to LicenseSpringUnityManager
+    /// change note :   (sept 18, 2019) - made this component as editor only protection level, game protection level will be
+    ///                 managed elsewhere, and it will not create in gameobject to run license manager and license checker.
+    /// 
     /// </summary>
     [InitializeOnLoad]
-    public class LicenseSpringWatcher
+    public class LicenseSpringAssets
     {
-        private static LicenseSpringUnityManager    _licenseSpringUnityManager;
+        private static string Uid;
 
-        public const string WATCH_NAME = "License Spring Manager";
-
-        static LicenseSpringWatcher()
+        static LicenseSpringAssets()
         {
+            //this is for asset differentiation.
+            Uid = GUID.Generate().ToString();
+
             //register editor application events.
             EditorApplication.update += OnEditorUpdateCycle;
             EditorApplication.projectChanged += OnProjectCompositionChanged;
             EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
 
-            Debug.Log("Watcher log init");
-            
-            RunLicenseWatchdog();
+            //initialize license spring manager.
         }
 
 
@@ -66,14 +68,7 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         private static void RunLicenseWatchdog()
         {
-            //Debug.Log("Running License Watchdog");
-
-            _licenseSpringUnityManager = GameObject.FindObjectOfType<LicenseSpringUnityManager>();
-            if (_licenseSpringUnityManager == null)
-                _licenseSpringUnityManager = new GameObject(WATCH_NAME).AddComponent<LicenseSpringUnityManager>();
-
-            var license= _licenseSpringUnityManager.CheckCurrentLicense();
-            _licenseSpringUnityManager.Notify(license);
+            
         }
         
         #endregion
