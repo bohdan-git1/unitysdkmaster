@@ -12,16 +12,26 @@ namespace LicenseSpring.Unity.Helpers
 {
     /// <summary>
     /// Baked Identity Hack!..
+    /// Change :    Should automatically check if this is dev machine or not by looking at set of places.
+    ///             eg : if an api config files located at UnityEditor.EditorApplication.applicationContentsPath than it's 
+    ///                 assumed as developer machine.
     /// </summary>
     public class LicenseApiConfigurationHelper
     {
+
         public static bool CheckLocalConfiguration(bool isDevMachine = true)
         {
             string folderPath = string.Empty;
             if (isDevMachine)
+            {
+                //check this path, if this is development machine this key should not included inside asset folder.
                 folderPath = Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "LicenseSpring");
+            }
             else
-                folderPath = Path.Combine(Directory.GetCurrentDirectory(), "LicenseSpring", "key.bin");
+            {
+                folderPath = Path.Combine(Directory.GetCurrentDirectory(), "LicenseSpring");
+
+            }
 
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
@@ -38,7 +48,10 @@ namespace LicenseSpring.Unity.Helpers
         {
             string saveFilePath = string.Empty;
             if (isDevMachine)
+            {
+                //check this path, if this is development machine this key should not included inside asset folder.
                 saveFilePath = Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "LicenseSpring", "key.bin");
+            }
             else
                 saveFilePath = Path.Combine(Directory.GetCurrentDirectory(), "LicenseSpring", "key.bin");
 

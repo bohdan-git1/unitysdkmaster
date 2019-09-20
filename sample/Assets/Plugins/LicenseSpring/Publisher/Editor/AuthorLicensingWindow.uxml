@@ -14,15 +14,50 @@ xsi:schemaLocation="
 >
 
   <engine:VisualElement class="HeaderImage"></engine:VisualElement>
-
   <engine:Label name="lblHeader" text="License Spring Unity Generate Api file to be include in Published Assets"></engine:Label>
-  <engine:TextField name="inputApiKey" text="Api Key"></engine:TextField>
-  <engine:TextField name="inputApiSharedKey" text="Shared Key"></engine:TextField>
-  <engine:TextField name="inputApiProductCode" text="Product code"></engine:TextField>
-  <engine:TextField name="inputApiProductName" text="Product Nmae"></engine:TextField>
-  <engine:TextField name="inputApiAppVersion" text="Api Version"></engine:TextField>
 
-  <engine:Button name="btnGenerateFile" text="Create Deployment KeyFile"/>
-  <engine:Button name="btnGenerateDevFile" text="Create Development KeyFile"/>
+  <engine:Box>
+    
+    <engine:VisualElement style="margin-top:5px;">
+
+      <engine:Label class="groupLabel" text="Api Key"/>
+      <engine:TextField name="inputApiKey" ></engine:TextField>
+      <engine:Label class="groupHint" text="Your api key"/>
+    </engine:VisualElement>
+
+    <engine:VisualElement style="margin-top:5px;">
+
+      <engine:Label class="groupLabel" text="Shared Key"/>
+      <engine:TextField name="inputApiSharedKey" ></engine:TextField>
+      <engine:Label class="groupHint" text="Your shared key"/>
+    </engine:VisualElement>
+
+    <engine:VisualElement style="margin-top:5px;">
+
+      <engine:Label class="groupLabel" text="Product Key"/>
+      <engine:TextField name="inputApiProductCode" ></engine:TextField>
+      <engine:Label class="groupHint" text="Your 3 character/digit product code"/>
+    </engine:VisualElement>
+
+    <engine:VisualElement style="margin-top:5px;">
+
+      <engine:Label class="groupLabel" text="Product Name"/>
+      <engine:TextField name="inputApiProductName" ></engine:TextField>
+      <engine:Label class="groupHint" text="Your official registered product name"/>
+    </engine:VisualElement>
+
+    <engine:VisualElement style="margin-top:5px;">
+
+      <engine:Label class="groupLabel" text="Product Version"/>
+      <engine:TextField name="inputApiAppVersion" ></engine:TextField>
+      <engine:Label class="groupHint" text="Your version of the app"/>
+    </engine:VisualElement>
+
+  </engine:Box>
+
+  <engine:Button name="btnGenerateFile" class="btnPumpkin" text="Create Deployment KeyFile" style="margin-left:5px;margin-right:5px;"/>
+  <engine:Button name="btnGenerateDevFile" class="btnMidnightBlue" text="Create Development KeyFile" style="margin-left:5px;margin-right:5px;"/>
+  <engine:VisualElement class="spacer"></engine:VisualElement>
+  <engine:Button name="btnToggleDevMode" class="btnWetAsphalt" text="Test Mode" style="margin-left:5px;margin-right:5px;"/>
 
 </engine:UXML>

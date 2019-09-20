@@ -14,6 +14,10 @@ public class AuthorLicensingWindow : EditorWindow
     private TextField _txtProductVersion;
     private TextField _txtProductName;
 
+    private Button  _btnPublishKey, 
+                    _btnDevKey, 
+                    _btnTestMode;
+
     private VisualElement           _headerImage;
     private LicenseSpringLocalKey   _LocalKey;
 
@@ -37,7 +41,7 @@ public class AuthorLicensingWindow : EditorWindow
 
         // A stylesheet can be added to a VisualElement.
         // The style will be applied to the VisualElement and all of its children.
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLicensingWindow.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Styles/LicenseSpringStyles.uss");
 
         root.styleSheets.Add(styleSheet);
 
@@ -57,11 +61,45 @@ public class AuthorLicensingWindow : EditorWindow
 
 
         //querying buttons
-        Button btnCreateFile = root.Q<Button>("btnGenerateFile");
-        btnCreateFile.clickable.clicked += OnBtnCreateFileClick;
+        _btnPublishKey = root.Q<Button>("btnGenerateFile");
+        _btnPublishKey.clickable.clicked += OnBtnCreateFileClick;
 
-        Button btnCreateDevFile = root.Q<Button>("btnGenerateDevFile");
-        btnCreateDevFile.clickable.clicked += OnbtnCreateDevClick;
+        _btnDevKey = root.Q<Button>("btnGenerateDevFile");
+        _btnDevKey.clickable.clicked += OnbtnCreateDevClick;
+
+        _btnTestMode = root.Query<Button>("btnToggleDevMode");
+        _btnTestMode.clickable.clicked += OnToggleDevModeClick;
+
+        var licenseStatus = LicenseSpringAssets.GetLicenseStatus();
+        switch (licenseStatus)
+        {
+            case LicenseSpring.LicenseStatus.Active:
+                _btnTestMode.SetEnabled(true);
+                break;
+            case LicenseSpring.LicenseStatus.Inactive:
+                _btnTestMode.SetEnabled(false);
+
+                break;
+            case LicenseSpring.LicenseStatus.Expired:
+                _btnTestMode.SetEnabled(false);
+
+                break;
+            case LicenseSpring.LicenseStatus.Disabled:
+                _btnTestMode.SetEnabled(false);
+
+                break;
+            case LicenseSpring.LicenseStatus.Unknown:
+                _btnTestMode.SetEnabled(false);
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void OnToggleDevModeClick()
+    {
+        LicenseSpringAssets.DeveloperToggleTestMode();
     }
 
     private void OnbtnCreateDevClick()

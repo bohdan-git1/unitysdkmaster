@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+xsi:schemaLocation="
+                        UnityEngine.UIElements ../../../../../UIElementsSchema/UnityEngine.UIElements.xsd
+                        UnityEditor.UIElements ../../../../../UIElementsSchema/UnityEditor.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
+"
+>
+  <engine:VisualElement class="HeaderImage"></engine:VisualElement>
+  <engine:Box>
+    <engine:VisualElement >
+
+      <engine:Label class="groupLabel" text="Email"/>
+      <engine:TextField name="email" text="Email"></engine:TextField>
+      <engine:Label class="groupHint" text="Put your valid email address to gain trial license"/>
+    
+    </engine:VisualElement>
+
+    <engine:Button name="btnRequestTrial" class="btnPumpkin" text="Request Trial" />
+
+    <engine:VisualElement style="margin-top:5px;">
+
+      <engine:Label class="groupLabel" text="Serial Key"/>
+      <engine:TextField name="cdkey" text="Serial Key from publisher"></engine:TextField>
+      <engine:Label class="groupHint" text="Put your serial key from publisher after succesfull purchase"/>
+
+    </engine:VisualElement>
+
+    <engine:Button name="btnSubmit" class="btnMidnightBlue" text="Serial Key" />
+  </engine:Box>
+
+
+  <engine:Box>
+    <engine:Label class="foldLabel" text="License Status"/>
+    <engine:Foldout>
+      <engine:Label class="labelMid" name="lblStatusHeader" tooltip="License Status" text="Trial License, Remaining Days :" />
+      <engine:Label class="labelBig" name="lblStatus" tooltip="License Status" text="26" />
+
+    </engine:Foldout>
+  </engine:Box>
+
+
+</engine:UXML>

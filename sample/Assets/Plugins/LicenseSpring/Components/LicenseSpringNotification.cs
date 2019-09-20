@@ -25,10 +25,7 @@ namespace LicenseSpring.Unity.Components
                 enabled = true;
             }
 
-            if (Application.isEditor)
-            {
-                AssignRenderTexture();
-            }
+            AssignRenderTexture();
         }
 
         void Start()
