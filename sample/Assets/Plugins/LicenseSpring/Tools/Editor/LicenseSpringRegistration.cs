@@ -57,13 +57,14 @@ public class LicenseSpringRegistration : EditorWindow
         if (isInitialized)
         {
             trialElement.Visible();
-            _lblStatusHeader.text = $"License Status : {LicenseSpringUnityAssets.GetLicenseStatus().ToString()}";
+            _lblStatusHeader.text = $"License Type : {LicenseSpringUnityAssets.GetCurrentLicense().Type()}";
 
             if (LicenseSpringUnityAssets.GetCurrentLicense().IsTrial())
                 _lblStatusLicense.text = $"Trial Days : {LicenseSpringUnityAssets.GetCurrentLicense().DaysRemaining()}";
             else
             {
-                _lblStatusLicense.text = "";
+                
+                _lblStatusLicense.text = $"{LicenseSpringUnityAssets.GetCurrentLicense().Key()}";
             }
         }
         else
