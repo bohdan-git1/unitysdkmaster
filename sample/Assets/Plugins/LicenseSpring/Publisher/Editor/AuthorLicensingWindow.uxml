@@ -34,7 +34,7 @@ xsi:schemaLocation="
 
     <engine:VisualElement style="margin-top:5px;">
 
-      <engine:Label class="groupLabel" text="Product Key"/>
+      <engine:Label class="groupLabel" text="Product Code"/>
       <engine:TextField name="inputApiProductCode" ></engine:TextField>
       <engine:Label class="groupHint" text="Your 3 character/digit product code"/>
     </engine:VisualElement>
@@ -55,9 +55,12 @@ xsi:schemaLocation="
 
   </engine:Box>
 
-  <engine:Button name="btnGenerateFile" class="btnPumpkin" text="Create Deployment KeyFile" style="margin-left:5px;margin-right:5px;"/>
-  <engine:Button name="btnGenerateDevFile" class="btnMidnightBlue" text="Create Development KeyFile" style="margin-left:5px;margin-right:5px;"/>
+  <engine:Button name="btnGenerateFile" class="btnPumpkin" text="Create Deployment KeyFile" style="margin-left:5px;margin-right:5px;height:30px"/>
+  <engine:Button name="btnGenerateDevFile" class="btnMidnightBlue" text="Create Development KeyFile" style="margin-left:5px;margin-right:5px;height:30px"/>
   <engine:VisualElement class="spacer"></engine:VisualElement>
-  <engine:Button name="btnToggleDevMode" class="btnWetAsphalt" text="Test Mode" style="margin-left:5px;margin-right:5px;"/>
+  
+  
+  <engine:Button name="btnToggleDevMode" class="btnWetAsphalt" text="Test Mode" style="margin-left:5px;margin-right:5px;height:40px"/>
+  <engine:Button name="btnResetLicense" class="btnWetAsphalt" text="Reset License" style="margin-left:5px;margin-right:5px;height:40px"/>
 
 </engine:UXML>

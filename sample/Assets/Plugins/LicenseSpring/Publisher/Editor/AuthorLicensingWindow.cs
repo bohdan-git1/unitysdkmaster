@@ -16,16 +16,20 @@ public class AuthorLicensingWindow : EditorWindow
 
     private Button  _btnPublishKey, 
                     _btnDevKey, 
-                    _btnTestMode;
+                    _btnTestMode, _btnResetLicense;
 
     private VisualElement           _headerImage;
     private LicenseSpringLocalKey   _LocalKey;
+
+    private const string TestNonDevMode = "Test Non Developer Mode";
+    private const string StopNonDevMode = "Stop Non Developer Mode";
+    private const string Title = "License Spring Api Registration";
 
     [MenuItem("License Spring/Publisher/Author Api")]
     public static void Init()
     {
         AuthorLicensingWindow wnd = GetWindow<AuthorLicensingWindow>();
-        wnd.titleContent = new GUIContent("Assets Author Licensing and Deployment");
+        wnd.titleContent = new GUIContent(Title);
         wnd.Show();
     }
 
@@ -59,7 +63,6 @@ public class AuthorLicensingWindow : EditorWindow
         _headerImage.style.unitySliceTop = new StyleInt(StyleKeyword.Auto);
         _headerImage.style.unitySliceBottom = new StyleInt(StyleKeyword.Auto);
 
-
         //querying buttons
         _btnPublishKey = root.Q<Button>("btnGenerateFile");
         _btnPublishKey.clickable.clicked += OnBtnCreateFileClick;
@@ -68,38 +71,62 @@ public class AuthorLicensingWindow : EditorWindow
         _btnDevKey.clickable.clicked += OnbtnCreateDevClick;
 
         _btnTestMode = root.Query<Button>("btnToggleDevMode");
+        _btnTestMode.text = TestNonDevMode;
         _btnTestMode.clickable.clicked += OnToggleDevModeClick;
 
-        var licenseStatus = LicenseSpringAssets.GetLicenseStatus();
-        switch (licenseStatus)
+        //reseting license, for dev only
+        _btnResetLicense = root.Query<Button>("btnResetLicense");
+        _btnResetLicense.clickable.clicked += OnResetLicenseClick;
+
+        //checking initialize status..
+        var isInitialized = LicenseSpringUnityAssets.GetInitializeStatus();
+        
+        //checking current installed license
+        var currentLicenseStatus = LicenseSpringUnityAssets.GetLicenseStatus();
+        
+        //detect the real mode of editor
+        var isDeveloper = LicenseSpringUnityAssets.GetDeveloperStatus();
+
+        if (isInitialized)
         {
-            case LicenseSpring.LicenseStatus.Active:
+            if (!isDeveloper)
+            {
+                _btnDevKey.SetEnabled(false);
+                _btnPublishKey.SetEnabled(false);
+                _btnTestMode.SetEnabled(false);
+                _btnResetLicense.SetEnabled(false);
+            }
+            else
+            {
+                _btnDevKey.SetEnabled(true);
+                _btnPublishKey.SetEnabled(true);
                 _btnTestMode.SetEnabled(true);
-                break;
-            case LicenseSpring.LicenseStatus.Inactive:
-                _btnTestMode.SetEnabled(false);
-
-                break;
-            case LicenseSpring.LicenseStatus.Expired:
-                _btnTestMode.SetEnabled(false);
-
-                break;
-            case LicenseSpring.LicenseStatus.Disabled:
-                _btnTestMode.SetEnabled(false);
-
-                break;
-            case LicenseSpring.LicenseStatus.Unknown:
-                _btnTestMode.SetEnabled(false);
-
-                break;
-            default:
-                break;
+                _btnResetLicense.SetEnabled(true);
+            }
         }
+        else
+        {
+            _btnDevKey.SetEnabled(true);
+            _btnPublishKey.SetEnabled(true);
+            _btnTestMode.SetEnabled(false);
+            _btnResetLicense.SetEnabled(false);
+        }
+
+    }
+
+    private void OnResetLicenseClick()
+    {
+        LicenseSpringUnityAssets.ResetLicense();
     }
 
     private void OnToggleDevModeClick()
     {
-        LicenseSpringAssets.DeveloperToggleTestMode();
+        if (_btnTestMode.text == StopNonDevMode)
+            _btnTestMode.text = TestNonDevMode;
+        else
+            _btnTestMode.text = StopNonDevMode;
+
+        LicenseSpringUnityAssets.DeveloperToggleTestMode();
     }
 
     private void OnbtnCreateDevClick()
@@ -137,6 +164,6 @@ public class AuthorLicensingWindow : EditorWindow
 
     private void OnValidate()
     {
-        
+        Debug.Log("validated");
     }
 }

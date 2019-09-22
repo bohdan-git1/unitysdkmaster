@@ -156,7 +156,7 @@ namespace LicenseSpring.Unity.Plugins
             };
 
             //HACK : if there is no baked credential read at files.
-            if (Helpers.LicenseApiConfigurationHelper.CheckLocalConfiguration())
+            if (Helpers.LicenseApiConfigurationHelper.IsExistDeployedConfig())
             {
                 var licenseLocalKey = Helpers.LicenseApiConfigurationHelper.ReadApiFileKey();
 

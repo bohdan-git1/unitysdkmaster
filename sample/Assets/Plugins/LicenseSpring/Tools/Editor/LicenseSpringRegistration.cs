@@ -2,7 +2,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
-
+using System;
+using LicenseSpring.Unity.Plugins;
 
 public class LicenseSpringRegistration : EditorWindow
 {
@@ -43,7 +44,44 @@ public class LicenseSpringRegistration : EditorWindow
         _txtSerial = cloneTree.Query<TextField>("cdkey");
 
         _lblStatusHeader = cloneTree.Query<Label>("lblStatusHeader");
-        _lblStatusLicense = cloneTree.Query<Label>("lblStatusLicense");
+        _lblStatusLicense = cloneTree.Query<Label>("lblStatus");
+
+        _btnRegister.clickable.clicked      += OnRegisterClick;
+        _btnRequestDemo.clickable.clicked   += OnRequestDemoClick;
+
+        var trialElement = cloneTree.Query<Label>("trial");
+        trialElement.NotVisible();
+
+        //checking status
+        var isInitialized = LicenseSpringUnityAssets.GetInitializeStatus();
+        if (isInitialized)
+        {
+            trialElement.Visible();
+            _lblStatusHeader.text = $"License Status : {LicenseSpringUnityAssets.GetLicenseStatus().ToString()}";
+
+            if (LicenseSpringUnityAssets.GetCurrentLicense().IsTrial())
+                _lblStatusLicense.text = $"Trial Days : {LicenseSpringUnityAssets.GetCurrentLicense().DaysRemaining()}";
+            else
+            {
+                _lblStatusLicense.text = "";
+            }
+        }
+        else
+        {
+            trialElement.NotVisible();
+        }
+        
     }
 
+    private void OnRequestDemoClick()
+    {
+        LicenseSpringUnityAssets.RequestDemo(_txtEmail.text);
+        this.Close();
+    }
+
+    private void OnRegisterClick()
+    {
+        LicenseSpringUnityAssets.Register(_txtSerial.text);
+        this.Close();
+    }
 }

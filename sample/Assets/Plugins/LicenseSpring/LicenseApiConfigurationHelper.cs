@@ -18,42 +18,84 @@ namespace LicenseSpring.Unity.Helpers
     /// </summary>
     public class LicenseApiConfigurationHelper
     {
+        static readonly string standardFolderPath = Path.Combine(UnityEngine.Application.dataPath, "Plugins", "LicenseSpring");
+        static readonly string developerFolderPath = Path.Combine(UnityEngine.Application.persistentDataPath, "LicenseSpring");
 
-        public static bool CheckLocalConfiguration(bool isDevMachine = true)
+        static LicenseApiConfigurationHelper()
         {
-            string folderPath = string.Empty;
-            if (isDevMachine)
-            {
-                //check this path, if this is development machine this key should not included inside asset folder.
-                folderPath = Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "LicenseSpring");
-            }
-            else
-            {
-                folderPath = Path.Combine(Directory.GetCurrentDirectory(), "LicenseSpring");
+            //create this path, to prevent error.
+            //TODO :find more elegant path to avoid folder not found!
+            
+            var existDevPath = Directory.Exists(developerFolderPath);
+            if (!existDevPath)
+                Directory.CreateDirectory(developerFolderPath);
 
-            }
-
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
-
-            //looking for file with bin extension
-            var keys = Directory.GetFiles(folderPath, "*.bin");
-            if (keys.Length > 0)
-                return true;
-            else
-                return false;
+            var existStandardPath = Directory.Exists(standardFolderPath);
+            if (!existStandardPath)
+                Directory.CreateDirectory(standardFolderPath);
+            
         }
 
-        public static LicenseSpringLocalKey ReadApiFileKey(bool isDevMachine = true)
+        /// <summary>
+        /// check existance of local config.
+        /// </summary>
+        /// <param name="isDevMachine"></param>
+        /// <returns></returns>
+        public static bool IsExistDeployedConfig()
+        {
+            try
+            {
+                //development machine autodetections.
+                var nonDevMachineConfiFiles = Directory.GetFiles(standardFolderPath, "*.bin", SearchOption.AllDirectories);
+                return nonDevMachineConfiFiles.Length > 0;
+            }
+            catch(DirectoryNotFoundException)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static bool IsExistDeveloperConfig()
+        {
+            try
+            {
+                var files = Directory.GetFiles(developerFolderPath, "*.bin",
+                  SearchOption.AllDirectories);
+
+                return files.Length > 0;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
+        /// Reading api configuration key and detect if this key is developer key or deployment key.
+        /// </summary>
+        /// <param name="projectname"></param>
+        /// <returns></returns>
+        public static LicenseSpringLocalKey ReadApiFileKey(string projectname = "", bool  isDevMachine = false)
         {
             string saveFilePath = string.Empty;
+
             if (isDevMachine)
             {
                 //check this path, if this is development machine this key should not included inside asset folder.
-                saveFilePath = Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "LicenseSpring", "key.bin");
+                saveFilePath = Path.Combine(developerFolderPath, $"{projectname}.bin");
             }
             else
-                saveFilePath = Path.Combine(Directory.GetCurrentDirectory(), "LicenseSpring", "key.bin");
+                saveFilePath = Path.Combine(standardFolderPath, $"{projectname}.bin");
 
             var keyLen = Sodium.SecretBox.GenerateKey().Length;
             var noOnceLen = Sodium.SecretBox.GenerateNonce().Length;
@@ -76,13 +118,13 @@ namespace LicenseSpring.Unity.Helpers
             return JsonConvert.DeserializeObject<LicenseSpringLocalKey>(Encoding.UTF8.GetString( actualData));
         }
 
-        public static void WriteApiFileKey(LicenseSpringLocalKey localKey, bool isDevMachine = true)
+        public static void WriteApiFileKey(LicenseSpringLocalKey localKey, bool isDevMachine = false)
         {
             string saveFilePath = string.Empty;
             if (isDevMachine)
-                saveFilePath = Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "LicenseSpring", "key.bin");
+                saveFilePath = Path.Combine(developerFolderPath, $"{UnityEngine.Application.productName}.bin");
             else
-                saveFilePath = Path.Combine(Directory.GetCurrentDirectory(), "LicenseSpring", "key.bin");
+                saveFilePath = Path.Combine(standardFolderPath, $"{UnityEngine.Application.productName}.bin");
 
             var jsonRep = JsonConvert.SerializeObject(localKey);
 
