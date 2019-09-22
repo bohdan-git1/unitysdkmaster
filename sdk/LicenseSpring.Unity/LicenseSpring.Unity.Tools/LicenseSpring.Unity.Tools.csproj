@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LicenseSpring.Unity\LicenseSpring.Unity.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="LicenseSpring">
       <HintPath>..\..\..\..\..\LicenseSpring.NETv4.5.1\LicenseSpring\bin\Net_v4.7.2\LicenseSpring.dll</HintPath>
     </Reference>
@@ -17,9 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Baseclass.Contrib.Nuget.Output" Version="2.4.3" />
-    <PackageReference Include="libsodium-net" Version="0.10.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <Folder Include="Plugins\Editor\" />
   </ItemGroup>
 
 </Project>

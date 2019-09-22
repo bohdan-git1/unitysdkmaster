@@ -43,6 +43,10 @@
       "frameworks": {
         "netstandard2.0": {
           "dependencies": {
+            "Baseclass.Contrib.Nuget.Output": {
+              "target": "Package",
+              "version": "[2.4.3, )"
+            },
             "NETStandard.Library": {
               "suppressParent": "All",
               "target": "Package",
@@ -52,6 +56,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.2, )"
+            },
+            "libsodium-net": {
+              "target": "Package",
+              "version": "[0.10.0, )"
             }
           },
           "imports": [

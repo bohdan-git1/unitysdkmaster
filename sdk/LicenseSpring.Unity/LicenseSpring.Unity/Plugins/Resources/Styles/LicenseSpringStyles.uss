@@ -1,0 +1,64 @@
+.HeaderImage {
+	margin:5px;
+	margin-top:10px;
+	filter:saturate(4);
+	display:flex;
+	height:120px;
+	background-image: resource('UI/logo');
+}
+
+.foldLabel {
+	font-style:bold;
+}
+
+.labelBig {
+	font-size : 25px;
+	text-color : #fff;
+	background-color:#34495e;
+}
+
+.labelMid {
+	font-size : 14px;
+	text-color : #fff;
+	background-color:#34495e;
+}
+
+Box {
+	margin:5px;
+	margin-top : 10px;
+	padding : 5px;
+}
+
+TextField {
+	font-size : 14;
+}
+
+.btnPumpkin {
+	text-color:#fff;
+	-unity-background-image-tint-color: #d35400;
+}
+
+.btnMidnightBlue {
+	text-color:#fff;
+	-unity-background-image-tint-color: #2980b9;
+}
+
+.btnWetAsphalt {
+	text-color:#fff;
+	-unity-background-image-tint-color: #34495e;
+}
+
+.groupLabel {
+	
+}
+
+.groupHint {
+	text-color:#2c3e50;
+	font-style:italic;
+	font-size : 8px;
+}
+
+.spacer {
+	margin-top:2px;
+	margin-bottom:2px;
+}

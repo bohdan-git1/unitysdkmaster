@@ -33,8 +33,7 @@ public class LicenseSpringRegistration : EditorWindow
         root.styleSheets.Add(styleSheet);
 
         // Import UXML
-        //var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Tools/Editor/LicenseSpringRegistration.uxml");
-        var visualTree = Resources.Load<VisualTreeAsset>("Layout/LicenseSpringRegistration");
+        var visualTree = Resources.Load<VisualTreeAsset>("Layouts/LicenseSpringRegistration");
         VisualElement cloneTree = visualTree.CloneTree();
         root.Add(cloneTree);
 

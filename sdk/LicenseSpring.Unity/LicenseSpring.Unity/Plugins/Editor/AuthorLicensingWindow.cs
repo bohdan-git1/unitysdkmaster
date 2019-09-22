@@ -39,12 +39,14 @@ public class AuthorLicensingWindow : EditorWindow
         VisualElement root = rootVisualElement;
 
         // Import UXML
-        var visualTree = Resources.Load<VisualTreeAsset>("Layout/AuthorLicensingWindow");
+        //var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Plugins/LicenseSpring/Publisher/Editor/AuthorLicensingWindow.uxml");
+        var visualTree = Resources.Load<VisualTreeAsset>("Layouts/AuthorLicensingWindow");
         VisualElement uiTree = visualTree.CloneTree();
         root.Add(uiTree);
 
         // A stylesheet can be added to a VisualElement.
         // The style will be applied to the VisualElement and all of its children.
+        //var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Plugins/LicenseSpring/Styles/LicenseSpringStyles.uss");
         var styleSheet = Resources.Load<StyleSheet>("Styles/LicenseSpringStyles");
         root.styleSheets.Add(styleSheet);
 
