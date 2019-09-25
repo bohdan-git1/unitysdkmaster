@@ -92,6 +92,8 @@ public class AuthorLicensingWindow : EditorWindow
             {
                 _btnDevKey.SetEnabled(false);
                 _btnPublishKey.SetEnabled(false);
+
+                
                 _btnTestMode.SetEnabled(false);
                 _btnResetLicense.SetEnabled(false);
             }
