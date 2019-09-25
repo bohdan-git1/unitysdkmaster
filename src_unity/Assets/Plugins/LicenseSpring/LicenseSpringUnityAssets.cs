@@ -67,7 +67,7 @@ namespace LicenseSpring.Unity.Plugins
         /// <returns></returns>
         public static bool GetDeveloperStatus()
         {
-            return _IsDeveloperMode;
+            return _IsDeveloperMode && GetInitializeStatus();
         }
 
         /// <summary>
@@ -99,8 +99,14 @@ namespace LicenseSpring.Unity.Plugins
 
         public static void ResetLicense()
         {
-            if(_licenseManager != null && _licenseManager.IsInitialized())
-                _licenseManager.ClearLocalStorage();
+            if (_licenseManager != null && _licenseManager.IsInitialized())
+            {
+                //_licenseManager.ClearLocalStorage();
+                var licenseFilePath = Path.Combine(Application.dataPath, "Plugins", "LicenseSpring", "License",
+                    $"{Application.productName}.bin");
+
+                File.Delete(licenseFilePath);
+            }
         }
 
         static LicenseSpringUnityAssets()
@@ -138,12 +144,18 @@ namespace LicenseSpring.Unity.Plugins
         static  bool    snapshoot = true;
         static  float   timer = 0;
         static  float   lastSnapshootTime = 0;
-        const   int     TimeInterval = 60;
+        const   int     TimeInterval = 30;
 
         private static void OnEditorUpdateCycle()
         {
-            if (_IsDeveloperMode)
+            if (GetDeveloperStatus())
+            {
+                //disable screen blit
+                var notify = InitNotificationSystem();
+                notify.enabled = false;
                 return;
+                
+            }
 
             //cycle all rendering 
             timer = Time.realtimeSinceStartup;
@@ -168,7 +180,7 @@ namespace LicenseSpring.Unity.Plugins
         private static LicenseSpringNotification InitNotificationSystem()
         {
             var currentCamera = Camera.main;
-
+            Debug.Log(currentCamera);
             var licenseSpringNotification = currentCamera.gameObject.GetComponent<LicenseSpringNotification>();
             if(licenseSpringNotification == null)
             {
@@ -176,7 +188,6 @@ namespace LicenseSpring.Unity.Plugins
             }
 
             licenseSpringNotification.SetStatus(LicenseStatus.Unknown);
-            licenseSpringNotification.enabled = false;
             return licenseSpringNotification;
         }
 
@@ -184,6 +195,8 @@ namespace LicenseSpring.Unity.Plugins
         {
             try
             {
+                _IsDeveloperMode = false;
+
                 _licenseManager = (LicenseManager)LicenseManager.GetInstance();
 
                 //path for registered license.
@@ -260,6 +273,8 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         private static void RunLicenseWatchdog()
         {
+            _IsDeveloperMode = GetDeveloperStatus();
+
             var currentSceneCamera = Camera.main;
             bool? licenseIsInitialized = _licenseManager?.IsInitialized();
 

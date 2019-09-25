@@ -35,15 +35,17 @@ xsi:schemaLocation="
     <engine:Button name="btnSubmit" class="btnMidnightBlue" text="Serial Key" />
   </engine:Box>
 
-
-  <engine:Box>
-    <engine:Label class="foldLabel" text="License Status"/>
-    <engine:Foldout>
-      <engine:Label class="labelMid" name="lblStatusHeader" tooltip="License Status" text="Trial License, Remaining Days :" />
-      <engine:Label class="labelBig" name="lblStatus" tooltip="License Status" text="26" />
-
-    </engine:Foldout>
+  <engine:VisualElement name="licenseStatus">
+     <engine:Box  >
+      <engine:Label class="foldLabel" text="License Status"/>
+      <engine:Foldout>
+        <engine:Label class="labelMid" name="lblStatusHeader" tooltip="License Status" text="" />
+        <engine:Label class="labelBig" name="lblStatus" tooltip="License Status" text="" />
+      </engine:Foldout>
   </engine:Box>
+  </engine:VisualElement>
+
+ 
 
 
 </engine:UXML>

@@ -81,7 +81,7 @@ public class AuthorLicensingWindow : EditorWindow
         var isInitialized = LicenseSpringUnityAssets.GetInitializeStatus();
         
         //checking current installed license
-        var currentLicenseStatus = LicenseSpringUnityAssets.GetLicenseStatus();
+        var currentLicense = LicenseSpringUnityAssets.GetCurrentLicense();
         
         //detect the real mode of editor
         var isDeveloper = LicenseSpringUnityAssets.GetDeveloperStatus();
@@ -115,6 +115,7 @@ public class AuthorLicensingWindow : EditorWindow
 
     private void OnResetLicenseClick()
     {
+        //got an error here, hack 
         LicenseSpringUnityAssets.ResetLicense();
     }
 

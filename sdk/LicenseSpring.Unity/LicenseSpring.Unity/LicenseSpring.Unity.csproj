@@ -5,6 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Plugins\Resources\UI\license_disabled.png" />
+    <None Remove="Plugins\Resources\UI\license_expired.png" />
+    <None Remove="Plugins\Resources\UI\license_invalid.png" />
+    <None Remove="Plugins\Resources\UI\license_unlicensed.png" />
+    <None Remove="Plugins\Resources\UI\logo.png" />
+    <None Remove="Plugins\Resources\UI\logo_nobackground.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="LicenseSpring">
       <HintPath>..\..\..\..\..\LicenseSpring.NETv4.5.1\LicenseSpring\bin\Net_v4.7.2\LicenseSpring.dll</HintPath>
     </Reference>
@@ -20,6 +29,15 @@
     <PackageReference Include="Baseclass.Contrib.Nuget.Output" Version="2.4.3" />
     <PackageReference Include="libsodium-net" Version="0.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Plugins\Resources\UI\license_disabled.png" />
+    <EmbeddedResource Include="Plugins\Resources\UI\license_expired.png" />
+    <EmbeddedResource Include="Plugins\Resources\UI\license_invalid.png" />
+    <EmbeddedResource Include="Plugins\Resources\UI\license_unlicensed.png" />
+    <EmbeddedResource Include="Plugins\Resources\UI\logo.png" />
+    <EmbeddedResource Include="Plugins\Resources\UI\logo_nobackground.png" />
   </ItemGroup>
 
 </Project>

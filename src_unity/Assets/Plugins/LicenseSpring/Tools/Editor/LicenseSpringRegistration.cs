@@ -38,41 +38,50 @@ public class LicenseSpringRegistration : EditorWindow
         VisualElement cloneTree = visualTree.CloneTree();
         root.Add(cloneTree);
 
-        _btnRegister = cloneTree.Query<Button>("btnSubmit");
-        _btnRequestDemo = cloneTree.Query<Button>("btnRequestTrial");
+        _btnRegister = cloneTree.Query<Button>(name:"btnSubmit");
+        _btnRequestDemo = cloneTree.Query<Button>(name:"btnRequestTrial");
 
-        _txtEmail = cloneTree.Query<TextField>("email");
-        _txtSerial = cloneTree.Query<TextField>("cdkey");
+        _txtEmail = cloneTree.Query<TextField>(name:"email");
+        _txtSerial = cloneTree.Query<TextField>(name:"cdkey");
 
-        _lblStatusHeader = cloneTree.Query<Label>("lblStatusHeader");
-        _lblStatusLicense = cloneTree.Query<Label>("lblStatus");
+        _lblStatusHeader = cloneTree.Q<Label>(name:"lblStatusHeader");
+        _lblStatusLicense = cloneTree.Q<Label>(name: "lblStatus");
 
         _btnRegister.clickable.clicked      += OnRegisterClick;
         _btnRequestDemo.clickable.clicked   += OnRequestDemoClick;
 
-        var trialElement = cloneTree.Query<Label>("trial");
-        trialElement.NotVisible();
+        var trialElement = cloneTree.Q<VisualElement>(name: "licenseStatus");
+        trialElement.style.display = DisplayStyle.None;
 
         //checking status
         var isInitialized = LicenseSpringUnityAssets.GetInitializeStatus();
         if (isInitialized)
         {
-            trialElement.Visible();
-            _lblStatusHeader.text = $"License Type : {LicenseSpringUnityAssets.GetCurrentLicense().Type()}";
+            var currentLicense = LicenseSpringUnityAssets.GetCurrentLicense();
+            if(currentLicense != null)
+            {
+                trialElement.style.display = DisplayStyle.Flex;
+                _lblStatusHeader.text = $"License Type : {LicenseSpringUnityAssets.GetCurrentLicense().Type()}";
 
-            if (LicenseSpringUnityAssets.GetCurrentLicense().IsTrial())
-                _lblStatusLicense.text = $"Trial Days : {LicenseSpringUnityAssets.GetCurrentLicense().DaysRemaining()}";
+                if (LicenseSpringUnityAssets.GetCurrentLicense().IsTrial())
+                    _lblStatusLicense.text = $"Trial Days : {LicenseSpringUnityAssets.GetCurrentLicense().DaysRemaining()}";
+                else
+                {
+
+                    _lblStatusLicense.text = $"{LicenseSpringUnityAssets.GetCurrentLicense().Key()}";
+                }
+            }
             else
             {
-                
-                _lblStatusLicense.text = $"{LicenseSpringUnityAssets.GetCurrentLicense().Key()}";
+                trialElement.style.display = DisplayStyle.None;
             }
+
         }
         else
         {
-            trialElement.NotVisible();
+            trialElement.style.display = DisplayStyle.None;
         }
-        
+
     }
 
     private void OnRequestDemoClick()
