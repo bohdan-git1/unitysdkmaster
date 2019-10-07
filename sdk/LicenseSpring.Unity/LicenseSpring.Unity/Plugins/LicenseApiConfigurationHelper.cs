@@ -18,8 +18,10 @@ namespace LicenseSpring.Unity.Helpers
     /// </summary>
     public class LicenseApiConfigurationHelper
     {
-        static readonly string standardFolderPath = Path.Combine(UnityEngine.Application.dataPath, "Plugins", "LicenseSpring");
-        static readonly string developerFolderPath = Path.Combine(UnityEngine.Application.persistentDataPath, "LicenseSpring");
+        static readonly string standardFolderPath = Path.Combine(UnityEngine.Application.dataPath, "Plugins", 
+            "LicenseSpring");
+        static readonly string developerFolderPath = Path.Combine(UnityEngine.Application.persistentDataPath, 
+            "LicenseSpring");
 
         static LicenseApiConfigurationHelper()
         {

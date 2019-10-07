@@ -19,4 +19,3 @@ F:\Projects\upworks\License Spring\src\unitysdkmaster\sdk\LicenseSpring.Unity\Li
 F:\Projects\upworks\License Spring\src\unitysdkmaster\sdk\LicenseSpring.Unity\LicenseSpring.Unity\obj\Debug\netstandard2.0\LicenseSpring.Unity.csproj.CopyComplete
 F:\Projects\upworks\License Spring\src\unitysdkmaster\sdk\LicenseSpring.Unity\LicenseSpring.Unity\obj\Debug\netstandard2.0\LicenseSpring.Unity.dll
 F:\Projects\upworks\License Spring\src\unitysdkmaster\sdk\LicenseSpring.Unity\LicenseSpring.Unity\obj\Debug\netstandard2.0\LicenseSpring.Unity.pdb
-F:\Projects\upworks\License Spring\src\unitysdkmaster\sdk\LicenseSpring.Unity\LicenseSpring.Unity\obj\Debug\netstandard2.0\LicenseSpring.Unity.csprojAssemblyReference.cache

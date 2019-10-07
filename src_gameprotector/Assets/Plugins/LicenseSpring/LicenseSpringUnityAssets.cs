@@ -122,7 +122,7 @@ namespace LicenseSpring.Unity.Plugins
             //initialize license spring manager.
             InitLicenseManager();
             //init notification systme
-            InitNotificationSystem();
+            //InitNotificationSystem();
         }
 
 
@@ -180,14 +180,12 @@ namespace LicenseSpring.Unity.Plugins
         private static LicenseSpringNotification InitNotificationSystem()
         {
             var currentCamera = Camera.main;
-            Debug.Log(currentCamera);
-            var licenseSpringNotification = currentCamera.gameObject.GetComponent<LicenseSpringNotification>();
+            var licenseSpringNotification = currentCamera.GetComponent<LicenseSpringNotification>();
             if(licenseSpringNotification == null)
-            {
                 licenseSpringNotification = currentCamera.gameObject.AddComponent<LicenseSpringNotification>();
-            }
+            else
+                licenseSpringNotification.SetStatus(LicenseStatus.Unknown);
 
-            licenseSpringNotification.SetStatus(LicenseStatus.Unknown);
             return licenseSpringNotification;
         }
 

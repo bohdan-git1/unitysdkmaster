@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace LicenseSpring.Unity.Components
 {
+    [DisallowMultipleComponent]
     [ExecuteInEditMode]
     public class LicenseSpringNotification : MonoBehaviour
     {

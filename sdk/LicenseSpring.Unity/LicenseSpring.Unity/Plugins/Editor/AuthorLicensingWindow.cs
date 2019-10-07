@@ -81,10 +81,10 @@ public class AuthorLicensingWindow : EditorWindow
 
         //checking initialize status..
         var isInitialized = LicenseSpringUnityAssets.GetInitializeStatus();
-        
+
         //checking current installed license
-        var currentLicenseStatus = LicenseSpringUnityAssets.GetLicenseStatus();
-        
+        var currentLicense = LicenseSpringUnityAssets.GetCurrentLicense();
+
         //detect the real mode of editor
         var isDeveloper = LicenseSpringUnityAssets.GetDeveloperStatus();
 
@@ -99,10 +99,21 @@ public class AuthorLicensingWindow : EditorWindow
             }
             else
             {
-                _btnDevKey.SetEnabled(true);
-                _btnPublishKey.SetEnabled(true);
-                _btnTestMode.SetEnabled(true);
-                _btnResetLicense.SetEnabled(true);
+                if(currentLicense != null)
+                {
+                    _btnDevKey.SetEnabled(true);
+                    _btnPublishKey.SetEnabled(true);
+                    _btnTestMode.SetEnabled(true);
+                    _btnResetLicense.SetEnabled(true);
+                }
+                else
+                {
+                    _btnDevKey.SetEnabled(false);
+                    _btnPublishKey.SetEnabled(false);
+                    _btnTestMode.SetEnabled(false);
+                    _btnResetLicense.SetEnabled(false);
+                }
+               
             }
         }
         else
@@ -163,8 +174,4 @@ public class AuthorLicensingWindow : EditorWindow
         LicenseApiConfigurationHelper.WriteApiFileKey(localKey, isDevMachine: false);
     }
 
-    private void OnValidate()
-    {
-        Debug.Log("validated");
-    }
 }
