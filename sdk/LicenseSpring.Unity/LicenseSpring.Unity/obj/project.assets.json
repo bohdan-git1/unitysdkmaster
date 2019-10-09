@@ -274,9 +274,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Projects\\upworks\\License Spring\\src\\unitysdkmaster\\sdk\\LicenseSpring.Unity\\LicenseSpring.Unity\\LicenseSpring.Unity.csproj",
-      "projectName": "LicenseSpring.Unity",
-      "projectPath": "F:\\Projects\\upworks\\License Spring\\src\\unitysdkmaster\\sdk\\LicenseSpring.Unity\\LicenseSpring.Unity\\LicenseSpring.Unity.csproj",
+      "projectUniqueName": "F:\\Projects\\upworks\\License Spring\\src\\unitysdkmaster\\sdk\\LicenseSpring.Unity\\LicenseSpring.Unity\\LicenseSpring.Unity.Project.csproj",
+      "projectName": "LicenseSpring.Unity.Project",
+      "projectPath": "F:\\Projects\\upworks\\License Spring\\src\\unitysdkmaster\\sdk\\LicenseSpring.Unity\\LicenseSpring.Unity\\LicenseSpring.Unity.Project.csproj",
       "packagesPath": "C:\\Users\\Sdb\\.nuget\\packages\\",
       "outputPath": "F:\\Projects\\upworks\\License Spring\\src\\unitysdkmaster\\sdk\\LicenseSpring.Unity\\LicenseSpring.Unity\\obj\\",
       "projectStyle": "PackageReference",

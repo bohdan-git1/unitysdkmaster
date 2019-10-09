@@ -9,7 +9,7 @@ namespace LicenseSpring.Unity.Components
     [ExecuteInEditMode]
     public class LicenseSpringNotification : MonoBehaviour
     {
-        private LicenseStatus   _appLicenseStatus;
+        private LicenseStatus   _appLicenseStatus = LicenseStatus.Unknown;
         private Texture         _splashTexture;
         private RenderTexture   _renderTexture;
 

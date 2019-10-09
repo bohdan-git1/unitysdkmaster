@@ -20,9 +20,9 @@ namespace LicenseSpring.Unity.Components
             else
             {
                 enabled = true;
+                AssignRenderTexture();
             }
 
-            AssignRenderTexture();
         }
 
         void Start()

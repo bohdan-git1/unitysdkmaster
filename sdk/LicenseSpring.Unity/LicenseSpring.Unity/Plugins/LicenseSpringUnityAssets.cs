@@ -3,10 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using LicenseSpring.Unity.Helpers;
 using LicenseSpring.Unity.Components;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,10 +18,10 @@ namespace LicenseSpring.Unity.Plugins
     {
         private static string _Uid;
 
-        private static LicenseManager _licenseManager;
-        private static LicenseSpringNotification _licenseSpringNotification;
-        private static LicenseSpringLocalKey _licenseSpringLocalKey;
-        private static bool _IsDeveloperMode = false;
+        private static LicenseManager               _licenseManager;
+        private static LicenseSpringNotification    _licenseSpringNotification;
+        private static LicenseSpringLocalKey        _licenseSpringLocalKey;
+        private static bool                         _IsDeveloperMode = false;
 
         /// <summary>
         /// Toggle developer/testing mode, by enable/disable all license checking routine
@@ -76,7 +73,7 @@ namespace LicenseSpring.Unity.Plugins
         /// <returns></returns>
         public static License GetCurrentLicense()
         {
-            return (License)_licenseManager.CurrentLicense();
+            return (License) _licenseManager.CurrentLicense();
         }
 
         /// <summary>
@@ -84,7 +81,7 @@ namespace LicenseSpring.Unity.Plugins
         /// </summary>
         /// <param name="email">your individual email</param>
         /// <returns></returns>
-        public static string RequestDemo(string email)
+        public static  string RequestDemo(string email)
         {
             var key = _licenseManager.GetTrialKey(email);
             _licenseManager.ActivateLicense(key);
@@ -119,10 +116,11 @@ namespace LicenseSpring.Unity.Plugins
             EditorApplication.projectChanged += OnProjectCompositionChanged;
             EditorApplication.hierarchyChanged += OnEditorHierarchyChanged;
 
+            InitNotificationSystem();
+
             //initialize license spring manager.
             InitLicenseManager();
             //init notification systme
-            InitNotificationSystem();
         }
 
 
@@ -131,7 +129,7 @@ namespace LicenseSpring.Unity.Plugins
         private static void OnProjectCompositionChanged()
         {
 
-            if (!_IsDeveloperMode)
+            if(!_IsDeveloperMode)
                 RunLicenseWatchdog();
         }
 
@@ -141,10 +139,10 @@ namespace LicenseSpring.Unity.Plugins
                 RunLicenseWatchdog();
         }
 
-        static bool snapshoot = true;
-        static float timer = 0;
-        static float lastSnapshootTime = 0;
-        const int TimeInterval = 30;
+        static  bool    snapshoot = true;
+        static  float   timer = 0;
+        static  float   lastSnapshootTime = 0;
+        const   int     TimeInterval = 30;
 
         private static void OnEditorUpdateCycle()
         {
@@ -154,7 +152,7 @@ namespace LicenseSpring.Unity.Plugins
                 var notify = InitNotificationSystem();
                 notify.enabled = false;
                 return;
-
+                
             }
 
             //cycle all rendering 
@@ -180,13 +178,12 @@ namespace LicenseSpring.Unity.Plugins
         private static LicenseSpringNotification InitNotificationSystem()
         {
             var currentCamera = Camera.main;
-            Debug.Log(currentCamera);
-            var licenseSpringNotification = currentCamera.gameObject.GetComponent<LicenseSpringNotification>();
+            var licenseSpringNotification = currentCamera.GetComponent<LicenseSpringNotification>();
             if (licenseSpringNotification == null)
             {
                 licenseSpringNotification = currentCamera.gameObject.AddComponent<LicenseSpringNotification>();
-            }else
                 licenseSpringNotification.SetStatus(LicenseStatus.Unknown);
+            }
 
             return licenseSpringNotification;
         }
@@ -200,9 +197,9 @@ namespace LicenseSpring.Unity.Plugins
                 _licenseManager = (LicenseManager)LicenseManager.GetInstance();
 
                 //path for registered license.
-                var licenseFilePath = Path.Combine(Application.dataPath, "Plugins", "LicenseSpring", "License",
+                var licenseFilePath = Path.Combine(Application.dataPath, "Plugins", "LicenseSpring", "License", 
                     $"{Application.productName}.bin");
-
+                
                 //init extended options of License spring configs.
                 LicenseSpringExtendedOptions licenseSpringExtendedOptions = new LicenseSpringExtendedOptions
                 {
@@ -212,11 +209,11 @@ namespace LicenseSpring.Unity.Plugins
                     LicenseFilePath = licenseFilePath
                 };
 
-                if (Helpers.LicenseApiConfigurationHelper.IsExistDeveloperConfig())
+                if(Helpers.LicenseApiConfigurationHelper.IsExistDeveloperConfig())
                 {
                     _licenseSpringLocalKey = Helpers.LicenseApiConfigurationHelper.ReadApiFileKey(Application.productName, true);
                 }
-                else if (Helpers.LicenseApiConfigurationHelper.IsExistDeployedConfig())
+                else if(Helpers.LicenseApiConfigurationHelper.IsExistDeployedConfig())
                 {
                     _licenseSpringLocalKey = Helpers.LicenseApiConfigurationHelper.ReadApiFileKey(Application.productName, false);
 
@@ -231,12 +228,13 @@ namespace LicenseSpring.Unity.Plugins
                 {
                     _IsDeveloperMode = _licenseSpringLocalKey.IsDevelopment;
 
-                    var licenseConfig = new LicenseSpringConfiguration(_licenseSpringLocalKey.ApiKey,
+                    var licenseConfig = new LicenseSpringConfiguration(
+                        _licenseSpringLocalKey.ApiKey,
                         _licenseSpringLocalKey.SharedKey,
                         _licenseSpringLocalKey.ProductCode,
                         _licenseSpringLocalKey.ApplicationName,
                         _licenseSpringLocalKey.ApplicationVersion,
-                        licenseSpringExtendedOptions);
+                        licenseSpringExtendedOptions); 
 
                     _licenseManager.Initialize(licenseConfig);
                 }
@@ -264,7 +262,7 @@ namespace LicenseSpring.Unity.Plugins
 
             return from assembly in AppDomain.CurrentDomain.GetAssemblies()
                    from type in assembly.GetTypes()
-                   where baseType.IsAssignableFrom(type)
+                   where baseType.IsAssignableFrom(type) 
                    select type;
         }
 
@@ -276,15 +274,15 @@ namespace LicenseSpring.Unity.Plugins
             _IsDeveloperMode = GetDeveloperStatus();
 
             var currentSceneCamera = Camera.main;
-            bool? licenseIsInitialized = _licenseManager?.IsInitialized();
+            bool licenseIsInitialized = GetInitializeStatus();
 
-            if (!licenseIsInitialized.HasValue || !licenseIsInitialized.Value)
+            if (!licenseIsInitialized)
             {
                 InitLicenseManager();
                 return;
             }
 
-            var license = (License)_licenseManager.CurrentLicense();
+            var license = GetCurrentLicense();
             if (license == null)
                 RunUnlicensedProduct();
 
