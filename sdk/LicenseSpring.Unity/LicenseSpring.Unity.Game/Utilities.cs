@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -33,7 +34,7 @@ namespace LicenseSpring.Unity.Game
             return hashString == valueHashed;
         }
 
-        public static LSLocalKey ReadLocalKey(string keyPath,string password)
+        public static LSLocalKey ReadLocalKey(string keyPath,string password = null)
         {
             LSLocalKey lSLocalKey = null;
             var hashPass = Sha256String(password);
@@ -46,6 +47,8 @@ namespace LicenseSpring.Unity.Game
                     stream.CopyTo(ms);
                     var streamBytesArray = ms.ToArray();
 
+                    
+
                     var cipher = new ArraySegment<byte>(streamBytesArray);
                     var isAuthenticated = SuiteB.Authenticate(passBytes, cipher);
 
@@ -53,12 +56,36 @@ namespace LicenseSpring.Unity.Game
                     {
                         var decryptedBytes = SuiteB.Decrypt(passBytes, cipher);
                         var strValue = SecurityDriven.Inferno.Utils.SafeUTF8.GetString(decryptedBytes);
-                        lSLocalKey = new LSLocalKey();
+
+                        lSLocalKey = LSLocalKey.FromString(strValue);
                     }
                 }
             }
 
             return lSLocalKey;
+        }
+
+        public static void SaveLocalKey(LSLocalKey localKey, string savepath)
+        {
+            try
+            {
+                //set the length of password to pass exact bytes count.
+                var crand = new CryptoRandom();
+                var key = crand.NextBytes(32);
+
+                var hashpass = Sha256String(SecurityDriven.Inferno.Utils.SafeUTF8.GetString(key));
+                var passhashBytes = SecurityDriven.Inferno.Utils.SafeUTF8.GetBytes(hashpass);
+                var localKeyBytes = SecurityDriven.Inferno.Utils.SafeUTF8.GetBytes(localKey.ToString());
+
+                var sum = passhashBytes.Concat(localKeyBytes).ToArray();
+
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
     }
