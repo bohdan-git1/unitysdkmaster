@@ -18,19 +18,21 @@ namespace LicenseSpring.Unity.Game
 
         public override string ToString()
         {
-            return $"{ApplicationName}.{ApplicationVersion}.{SharedKey}.{ApiKey}";
+            //          0               1                   2               3           4
+            return $"{ApplicationName}#{ApplicationVersion}#{ProductCode}#{SharedKey}#{ApiKey}";
         }
 
-        public static LSLocalKey FromString(string value) {
-            var split = value.Trim().Split('.');
+        public static LSLocalKey FromString(string value)
+        {
+            var split = value.Trim().Split('#');
 
-            return new LSLocalKey { 
-             ApiKey = split[0],
-             ApplicationName = split[1],
-             ApplicationVersion = split[2],
-             name = split[3],
-             ProductCode = split[4],
-             SharedKey = split[5]
+            return new LSLocalKey
+            {
+                ApiKey = split[4],
+                ApplicationName = split[0],
+                ApplicationVersion = split[1],
+                ProductCode = split[2],
+                SharedKey = split[3]
             };
         }
     }

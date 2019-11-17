@@ -28,6 +28,9 @@ namespace LicenseSpring.Unity.Game
         private LicenseSpringConfiguration      _lsConfig;
         private LicenseSpringExtendedOptions    _lseo;
 
+        private ActivationStatus    _enumActiveStatus;
+        private LicenseStatus       _enumLicenseStatus;
+
         public string HardwareId {
             get {
                 _hid = UnityEngine.SystemInfo.deviceUniqueIdentifier;
@@ -35,40 +38,110 @@ namespace LicenseSpring.Unity.Game
             }
             set { _hid = value; } 
         }
-
         void Awake()
         {
-            _licensePath = Path.Combine(Application.dataPath, Application.productName,"lock.lic");
-            _apiPath = Path.Combine(Application.dataPath, Application.productName,"app.lic");
+            _licensePath = Path.Combine(Application.persistentDataPath, Application.productName, "lock.lic");
+            _apiPath = Path.Combine(Application.persistentDataPath, Application.productName, "app.lic");
+
+            _enumActiveStatus = ActivationStatus.Unknown;
 
             if (!File.Exists(_apiPath))
             {
+                _enumActiveStatus = ActivationStatus.Unknown;
                 throw new LicenseConfigurationException("Configuration invalid");
             }
-
-            //extended configuration options.
-            _lseo = new LicenseSpringExtendedOptions
+            else
             {
-                HardwareID = this.HardwareId,
-                LicenseFilePath = _licensePath,
-                CollectHostNameAndLocalIP = true
-            };
+                try
+                {
+                    //extended configuration options.
+                    _lseo = new LicenseSpringExtendedOptions
+                    {
+                        HardwareID = this.HardwareId,
+                        LicenseFilePath = _licensePath,
+                        CollectHostNameAndLocalIP = true
+                    };
 
-            //local config decryptor
-            //_localKey = Utilities.ReadLocalKey(_apiPath, this.HardwareId);
+                    //local config decryptor
+                    _localKey = KeyStorage.ReadLocalKey();
 
-            //main configurations
+                    //main configurations
+                    LicenseSpringConfiguration lsConfig = new LicenseSpringConfiguration(_localKey.ApiKey,
+                        _localKey.SharedKey,
+                        _localKey.ProductCode,
+                        _localKey.ApplicationName,
+                        _localKey.ApplicationVersion,
+                        _lseo);
 
-            _internalLicenseManager = (LicenseManager)LicenseManager.GetInstance();
-            _internalLicenseManager.Initialize(_lsConfig);
+                    _internalLicenseManager = (LicenseManager)LicenseManager.GetInstance();
+                    _internalLicenseManager.Initialize(_lsConfig);
+
+                    _installedLicense = (License)_internalLicenseManager.CurrentLicense();
+                    SetLicenseStatus();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex.Message);
+                }
+            }
 
             DontDestroyOnLoad(this);
         }
 
         void Start()
         {
-            
+            _installedLicense = (License)_internalLicenseManager.CurrentLicense();
+            SetLicenseStatus();
         }
 
+        private void Update()
+        {
+            SetLicenseStatus();
+        }
+
+        private void SetLicenseStatus()
+        {
+            if (_installedLicense == null)
+            {
+                _enumLicenseStatus = LicenseStatus.Unknown;
+                return;
+            }
+
+            if (_installedLicense.IsEnabled())
+            {
+                if (_installedLicense.IsActive())
+                {
+                    _enumLicenseStatus = LicenseStatus.Active;
+                    _enumActiveStatus = ActivationStatus.Registered;
+
+                    if (_installedLicense.IsTrial())
+                    {
+                        _enumActiveStatus = ActivationStatus.Trial;
+                    }
+
+                    if (_installedLicense.IsExpired())
+                    {
+                        _enumActiveStatus = ActivationStatus.Expired;
+                    }
+
+                    if (_installedLicense.IsOfflineActivated())
+                    {
+                        _enumActiveStatus = ActivationStatus.Offline;
+                    }
+
+                }
+                else
+                {
+                    _enumLicenseStatus = LicenseStatus.InActive;
+                }
+
+            }
+            else
+            {
+                _enumActiveStatus = ActivationStatus.Unknown;
+                _enumLicenseStatus = LicenseStatus.Unknown;
+                return;
+            }
+        }
     }
 }

@@ -5,15 +5,17 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using SecurityDriven.Inferno;
+using UnityEngine;
 
 namespace LicenseSpring.Unity.Game
 {
 
     public static class KeyStorage
     {
-        public static LSLocalKey ReadLocalKey(string keyPath)
+        public static LSLocalKey ReadLocalKey()
         {
             LSLocalKey lSLocalKey = null;
+            string keyPath = Path.Combine(Application.persistentDataPath, "api.bin");
 
             var content = File.ReadAllText(keyPath);
             content = SecureStorage.Decrypt(content);
@@ -22,20 +24,21 @@ namespace LicenseSpring.Unity.Game
             return lSLocalKey;
         }
 
-        public static void SaveLocalKey(LSLocalKey localKey, string savepath, string password)
+        public static void SaveLocalKey(LSLocalKey localKey, string password)
         {
             try
             {
+                var savePath = Path.Combine(Application.persistentDataPath, "api.bin");
                 var encryptResult = SecureStorage.Encrypt(localKey.ToString(), password);
 
-                using (StreamWriter writer = new StreamWriter(savepath))
+                using (StreamWriter writer = new StreamWriter(savePath))
                 {
                     writer.Write(encryptResult.Item1);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
