@@ -8,85 +8,91 @@ using SecurityDriven.Inferno;
 
 namespace LicenseSpring.Unity.Game
 {
-    public static class Utilities
+
+    public static class KeyStorage
     {
-        public static string Sha256String(string value)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            using (var hash = SHA256.Create())
-            {
-                Encoding enc = Encoding.UTF8;
-                var result = hash.ComputeHash(enc.GetBytes(value));
-
-                foreach (var item in result)
-                {
-                    sb.Append(item.ToString("x2"));
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        public static bool CompareHash(string hashString, string value)
-        {
-            var valueHashed = Sha256String(value);
-            return hashString == valueHashed;
-        }
-
-        public static LSLocalKey ReadLocalKey(string keyPath,string password = null)
+        public static LSLocalKey ReadLocalKey(string keyPath)
         {
             LSLocalKey lSLocalKey = null;
-            var hashPass = Sha256String(password);
-            var passBytes = SecurityDriven.Inferno.Utils.SafeUTF8.GetBytes(hashPass);
 
-            using (var stream = File.OpenRead(keyPath))
-            {
-                using (var ms = new MemoryStream())
-                {
-                    stream.CopyTo(ms);
-                    var streamBytesArray = ms.ToArray();
+            var content = File.ReadAllText(keyPath);
+            content = SecureStorage.Decrypt(content);
 
-                    
-
-                    var cipher = new ArraySegment<byte>(streamBytesArray);
-                    var isAuthenticated = SuiteB.Authenticate(passBytes, cipher);
-
-                    if (isAuthenticated)
-                    {
-                        var decryptedBytes = SuiteB.Decrypt(passBytes, cipher);
-                        var strValue = SecurityDriven.Inferno.Utils.SafeUTF8.GetString(decryptedBytes);
-
-                        lSLocalKey = LSLocalKey.FromString(strValue);
-                    }
-                }
-            }
-
+            lSLocalKey = LSLocalKey.FromString(content);
             return lSLocalKey;
         }
 
-        public static void SaveLocalKey(LSLocalKey localKey, string savepath)
+        public static void SaveLocalKey(LSLocalKey localKey, string savepath, string password)
         {
             try
             {
-                //set the length of password to pass exact bytes count.
-                var crand = new CryptoRandom();
-                var key = crand.NextBytes(32);
+                var encryptResult = SecureStorage.Encrypt(localKey.ToString(), password);
 
-                var hashpass = Sha256String(SecurityDriven.Inferno.Utils.SafeUTF8.GetString(key));
-                var passhashBytes = SecurityDriven.Inferno.Utils.SafeUTF8.GetBytes(hashpass);
-                var localKeyBytes = SecurityDriven.Inferno.Utils.SafeUTF8.GetBytes(localKey.ToString());
-
-                var sum = passhashBytes.Concat(localKeyBytes).ToArray();
-
-                
+                using (StreamWriter writer = new StreamWriter(savepath))
+                {
+                    writer.Write(encryptResult.Item1);
+                }
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
 
+    }
+
+    public static class SecureStorage
+    {
+        private static byte[] IV = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+        private static int BlockSize = 128;
+
+        public static (string, byte[]) Encrypt(string content, string password)
+        {
+            byte[] bytes = Encoding.Unicode.GetBytes(content);
+            byte[] passBytes = Encoding.Unicode.GetBytes(password);
+            SymmetricAlgorithm crypt = Aes.Create();
+            HashAlgorithm hash = MD5.Create();
+            crypt.BlockSize = BlockSize;
+            crypt.Key = hash.ComputeHash(passBytes);
+            crypt.IV = IV;
+
+            byte[] sum = new byte[] { };
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                using (CryptoStream cryptoStream =
+                   new CryptoStream(memoryStream, crypt.CreateEncryptor(), CryptoStreamMode.Write))
+                {
+                    cryptoStream.Write(bytes, 0, bytes.Length);
+                }
+                sum = crypt.Key.Concat(memoryStream.ToArray()).ToArray();
+            }
+            return (Convert.ToBase64String(sum), sum);
+        }
+
+        public static string Decrypt(string content)
+        {
+            byte[] contentBytes = Convert.FromBase64String(content);
+            byte[] bytes = contentBytes.Skip(16).ToArray();
+            byte[] passBytes = contentBytes.Take(16).ToArray();
+
+            string result = string.Empty;
+
+            SymmetricAlgorithm crypt = Aes.Create();
+            crypt.Key = passBytes;
+            crypt.IV = IV;
+
+            using (MemoryStream memoryStream = new MemoryStream(bytes))
+            {
+                using (CryptoStream cryptoStream =
+                   new CryptoStream(memoryStream, crypt.CreateDecryptor(), CryptoStreamMode.Read))
+                {
+                    byte[] decryptedBytes = new byte[bytes.Length];
+                    cryptoStream.Read(decryptedBytes, 0, decryptedBytes.Length);
+                    result = Encoding.Unicode.GetString(decryptedBytes);
+                }
+            }
+
+            return result;
+        }
     }
 }

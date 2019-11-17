@@ -55,7 +55,7 @@ namespace LicenseSpring.Unity.Game
             };
 
             //local config decryptor
-            _localKey = Utilities.ReadLocalKey(_apiPath, this.HardwareId);
+            //_localKey = Utilities.ReadLocalKey(_apiPath, this.HardwareId);
 
             //main configurations
 
